@@ -555,27 +555,33 @@ Soothing effects for cramping, nausea, IBS symptoms, acid/heartburn relief`,
   };
 
   // --- Coming-soon products ---------------------------------------------------
+  /* Only the Menopause Probiotic entry is from Figma. The other two slots are
+     intentionally identical placeholders — the client will replace name,
+     tagline, tags, and bg color when they have the real upcoming products. */
   const comingSoon = [
     {
       id: 'menopause-probiotic',
       name: 'Menopause Probiotic',
-      tagline: 'Strain-specific probiotic formulated for the menopausal microbiome shift',
+      tagline:
+        'Strain-specific probiotic for the menopausal microbiome shift. Targets estrobolome and vaginal atrophy. Not another supplement — microbiome-first.',
       tags: ['Floradapt/KABP', 'ME-3', 'DR7 candidates'],
       bg: '#F6DDE2',
     },
     {
-      id: 'pregnancy-probiotic',
-      name: 'Pregnancy Probiotic',
-      tagline: 'Targeted strains for prenatal vaginal and gut health',
-      tags: ['L. rhamnosus GR-1®', 'L. reuteri RC-14®'],
-      bg: '#E3EDF6',
+      id: 'placeholder-2',
+      name: 'Menopause Probiotic',
+      tagline:
+        'Strain-specific probiotic for the menopausal microbiome shift. Targets estrobolome and vaginal atrophy. Not another supplement — microbiome-first.',
+      tags: ['Floradapt/KABP', 'ME-3', 'DR7 candidates'],
+      bg: '#F6DDE2',
     },
     {
-      id: 'libido-support',
-      name: 'Libido Support',
-      tagline: 'Hormone-free formula for desire, mood and energy',
-      tags: ['Maca', 'Shatavari', 'KSM-66®'],
-      bg: '#DEF1EA',
+      id: 'placeholder-3',
+      name: 'Menopause Probiotic',
+      tagline:
+        'Strain-specific probiotic for the menopausal microbiome shift. Targets estrobolome and vaginal atrophy. Not another supplement — microbiome-first.',
+      tags: ['Floradapt/KABP', 'ME-3', 'DR7 candidates'],
+      bg: '#F6DDE2',
     },
   ];
 

@@ -272,7 +272,7 @@
     <section class="view-enter quiz-view">
       <div class="quiz-head">
         <h1 class="quiz-head__title">Narrow by life stage</h1>
-        <p class="quiz-head__sub">Optional — refines the recommendation</p>
+        <p class="quiz-head__sub">Refine your results</p>
         <span class="match-pill" id="matchPill"${count === 0 ? ' hidden' : ''}>${count} matching products</span>
       </div>
       <div class="chip-grid chip-grid--3">
@@ -721,9 +721,12 @@
   // ---------------------------------------------------------------------------
   const comparison = () => {
     const allIds = Object.keys(D().competitorMatrix);
-    const lastRec = S().get('lastRec.primaryId');
     const compareWith = S().get('compareWith');
-    const initial = compareWith || lastRec || 'prepro';
+    /* Default to Pre + Pro when the user lands on /comparison directly (e.g.
+       via the bottom nav). Honor an explicit Compare click on a recommendation
+       card (sets `compareWith`); otherwise default to prepro regardless of the
+       last recommended product. */
+    const initial = compareWith || 'prepro';
     return /* html */ `
     <section class="view-enter cmp-view">
       <div class="cmp-controls">
@@ -769,7 +772,7 @@
     'Love Wellness — Good Girl Probiotics': {
       brand: 'LOVE WELLNESS',
       logo: 'assets/img/brands/love-wellness.svg',
-      img: 'assets/img/products/love-wellness-good-girl.jpg',
+      img: 'assets/img/products/love-wellness-good-girl.png',
       short: 'Good Girl Probiotics',
     },
     'AZO — Complete Feminine Balance': {
@@ -850,14 +853,14 @@
     'Double Wood — Liquid Chlorophyll': {
       brand: 'DOUBLE WOOD',
       logo: 'assets/img/brands/double-wood.png',
-      img: 'assets/img/products/double-wood-chlorophyll.jpg',
+      img: 'assets/img/products/double-wood-chlorophyll.png',
       short: 'Liquid Chlorophyll',
     },
     /* Menopause competitors */
     'Estroven — Multi-Symptom Relief': {
       brand: 'ESTROVEN',
       logo: 'assets/img/brands/estroven.png',
-      img: 'assets/img/products/estroven-multi-symptom.webp',
+      img: 'assets/img/products/estroven-multi-symptom.jpeg',
       short: 'Multi-Symptom Menopause Relief',
     },
     'Relizen — Hot Flash & Night Sweat': {
@@ -876,7 +879,7 @@
     'O Positiv — FLO Ovarian Support': {
       brand: 'O POSITIV',
       logo: 'assets/img/brands/o-positiv.svg',
-      img: 'assets/img/products/o-positiv-flo-ovarian-support.webp',
+      img: 'assets/img/products/o-positiv-flo-ovarian-support.png',
       short: 'FLO Ovarian Support',
     },
     'Theralogix — Ovasitol': {
@@ -967,7 +970,8 @@
                 const icon = positive
                   ? `<img class="cmp-mark" src="assets/img/icons/cmp-check.svg" alt="" width="20" height="20"/>`
                   : `<img class="cmp-mark cmp-mark--x" src="assets/img/icons/cmp-x.svg" alt="" width="12" height="12"/>`;
-                return `<div class="cmp-col__cell">${icon}<span>${escape(cell)}</span></div>`;
+
+                return `<div class="cmp-col__cell">${!cell.includes('$') ? (!(cell == '') ? icon : '') : ''}<span>${escape(cell)}</span></div>`;
               })
               .join('')}
           </div>
@@ -1085,33 +1089,49 @@
         <p class="cs-head__sub">Innovative formulas in development for comprehensive women's health</p>
       </div>
 
-      <div class="cs-carousel" id="csCarousel">
-        ${items
-          .map(
-            (p, i) => `
-          <article class="cs-card${i === 0 ? ' cs-card--active' : ''}" data-cs-idx="${i}" style="--cs-bg:${p.bg};">
-            <div class="cs-card__media">
-              <span class="cs-card__pill">Coming soon...</span>
-              <div class="cs-card__silhouette" aria-hidden="true"></div>
-            </div>
-            <div class="cs-card__body">
-              <div class="cs-card__head-row">
-                <h2 class="cs-card__name">${escape(p.name)}</h2>
-                <button class="rec-pill cs-card__details">Clinical Details</button>
-              </div>
-              <div class="cs-card__tags">
-                ${p.tags.map((t) => `<span class="cs-tag">${escape(t)}</span>`).join('')}
-              </div>
-              <p class="cs-card__desc">${escape(p.tagline)}</p>
-              <form class="cs-card__form" data-cs-form>
-                <input class="cs-input" type="email" placeholder="Your email for early access" required />
-                <button class="btn-primary cs-card__cta" type="submit">Get notified at launch</button>
-              </form>
-            </div>
-          </article>
-        `,
-          )
-          .join('')}
+      <div class="cs-carousel-wrap">
+        <button class="cs-arrow cs-arrow--prev" id="csArrowPrev" type="button" aria-label="Previous">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="#25425D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="cs-arrow cs-arrow--next" id="csArrowNext" type="button" aria-label="Next">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="#25425D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="cs-carousel" id="csCarousel">
+          ${(() => {
+            /* Cyclic peek: render visual clones of the last slide before slide 1
+               and of the first slide after the last so side peeks always show
+               adjacent content, even at the edges. Clones are inert — they
+               can't be active and don't get scroll-snapped. */
+            const renderCard = (p, i, isClone) => `
+              <article class="cs-card${i === 0 && !isClone ? ' cs-card--active' : ''}${isClone ? ' cs-card--clone' : ''}" ${isClone ? '' : `data-cs-idx="${i}"`} style="--cs-bg:${p.bg};" aria-hidden="${isClone}">
+                <div class="cs-card__media">
+                  <span class="cs-card__pill">Coming soon...</span>
+                  <div class="cs-card__silhouette" aria-hidden="true"></div>
+                </div>
+                <div class="cs-card__body">
+                  <div class="cs-card__head-row">
+                    <h2 class="cs-card__name">${escape(p.name)}</h2>
+                    <button class="rec-pill cs-card__details" ${isClone ? 'tabindex="-1"' : ''}>Clinical Details</button>
+                  </div>
+                  <div class="cs-card__tags">
+                    ${p.tags.map((t) => `<span class="cs-tag">${escape(t)}</span>`).join('')}
+                  </div>
+                  <p class="cs-card__desc">${escape(p.tagline)}</p>
+                  <form class="cs-card__form" ${isClone ? '' : 'data-cs-form'}>
+                    <input class="cs-input" type="email" placeholder="Your email for early access" ${isClone ? 'tabindex="-1"' : 'required'} />
+                    <button class="btn-primary cs-card__cta" type="submit" ${isClone ? 'tabindex="-1"' : ''}>Get notified at launch</button>
+                  </form>
+                </div>
+              </article>`;
+            const last = items[items.length - 1];
+            const first = items[0];
+            return [
+              renderCard(last, items.length - 1, true),
+              ...items.map((p, i) => renderCard(p, i, false)),
+              renderCard(first, 0, true),
+            ].join('');
+          })()}
+        </div>
       </div>
 
       <div class="cs-pager">
@@ -1121,27 +1141,65 @@
   };
 
   function comingSoonInit(root) {
-    const cards = Array.from(root.querySelectorAll('.cs-card'));
+    const carousel = root.querySelector('#csCarousel');
+    /* Real cards only — exclude visual clones at the start/end. */
+    const cards = Array.from(root.querySelectorAll('.cs-card:not(.cs-card--clone)'));
     const dots = Array.from(root.querySelectorAll('.cs-dot'));
     let idx = 0;
     const setActive = (n) => {
-      idx = (n + cards.length) % cards.length;
+      /* Cyclic: wrap on either end. Both arrows are always enabled. */
+      idx = ((n % cards.length) + cards.length) % cards.length;
       cards.forEach((c, i) => c.classList.toggle('cs-card--active', i === idx));
       dots.forEach((d, i) => d.classList.toggle('cs-dot--on', i === idx));
       const card = cards[idx];
-      if (card) card.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'center'});
+      if (card && carousel) {
+        const left = card.offsetLeft - (carousel.clientWidth - card.offsetWidth) / 2;
+        carousel.scrollLeft = left;
+      }
     };
     dots.forEach((d, i) => d.addEventListener('click', () => setActive(i)));
-    root.querySelectorAll('[data-cs-form]').forEach((f) =>
-      f.addEventListener('submit', (e) => {
+    root.querySelector('#csArrowPrev')?.addEventListener('click', () => setActive(idx - 1));
+    root.querySelector('#csArrowNext')?.addEventListener('click', () => setActive(idx + 1));
+    /* Initial sync: ensure card 0 is centered after first paint (gives the
+       layout a tick to compute offsetLeft accounting for the clones). */
+    requestAnimationFrame(() => setActive(0));
+    /* Wire the "Get notified at launch" form to Klaviyo. The form lives on
+       each real card (clones are tagged 'data-cs-form' is omitted on them).
+       On success we replace the form with a confirmation; on failure we
+       restore the input + show an inline error. */
+    root.querySelectorAll('[data-cs-form]').forEach((f) => {
+      const card = f.closest('.cs-card');
+      const productName = card?.querySelector('.cs-card__name')?.textContent?.trim() || '';
+      f.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const email = f.querySelector('input').value;
-        if (email) {
-          f.querySelector('input').value = '';
-          alert(`Thanks — we'll notify ${email} at launch.`);
+        const input = f.querySelector('input');
+        const btn = f.querySelector('button[type="submit"]');
+        const email = (input.value || '').trim();
+        if (!email) return;
+        btn.disabled = true;
+        const originalLabel = btn.textContent;
+        btn.textContent = 'Subscribing\u2026';
+        f.querySelectorAll('.cs-card__error').forEach((el) => el.remove());
+        const res = await global.HV.submit.subscribeWaitlist({email, productName});
+        if (res.ok) {
+          /* Replace the form with a success state inside the card */
+          const success = document.createElement('div');
+          success.className = 'cs-card__success';
+          success.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#2EAB7A"/><path d="M7 12.5l3.2 3.2L17 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg><span>You're on the list \u2014 we'll email you at launch.</span>`;
+          f.replaceWith(success);
+        } else {
+          btn.disabled = false;
+          btn.textContent = originalLabel;
+          const err = document.createElement('p');
+          err.className = 'cs-card__error';
+          err.textContent =
+            res.status === 400 || res.status === 422
+              ? "Couldn't subscribe — please check the email and try again."
+              : 'Something went wrong subscribing. Please try again in a moment.';
+          f.appendChild(err);
         }
-      }),
-    );
+      });
+    });
   }
 
   // ---------------------------------------------------------------------------

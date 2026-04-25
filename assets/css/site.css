@@ -2138,17 +2138,55 @@ h2,
   text-align: center;
   margin: 0;
 }
+/* Coming Soon carousel — center-snap layout per Figma 157:5244.
+   Active card sits centered at full size; adjacent cards peek from each
+   side, smaller and faded. Arrows overlap the side cards. */
+.cs-carousel-wrap {
+  position: relative;
+  width: 100%;
+}
 .cs-carousel {
   display: flex;
-  gap: 24px;
+  gap: 32px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   padding: 0 0 8px;
-  scroll-padding: 0 48px;
   -webkit-overflow-scrolling: touch;
 }
 .cs-carousel::-webkit-scrollbar {
   display: none;
+}
+/* Visual clones at start/end provide cyclic peek (last slide visible left of
+   slide 1; first slide visible right of last). They are inert — never become
+   active and don't snap-align so manual scrolling won't stop on them. */
+.cs-card--clone {
+  scroll-snap-align: none;
+  pointer-events: none;
+  user-select: none;
+}
+/* Klaviyo subscription feedback inside each card */
+.cs-card__success {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #e6f6ee;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--navy);
+}
+.cs-card__success svg {
+  flex: 0 0 20px;
+}
+.cs-card__error {
+  margin: 8px 0 0;
+  padding: 8px 12px;
+  background: #fdecec;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #b6485a;
+  flex-basis: 100%;
 }
 .cs-card {
   flex: 0 0 760px;
@@ -2160,11 +2198,48 @@ h2,
   display: flex;
   flex-direction: column;
   gap: 24px;
-  transition: opacity 200ms;
-  opacity: 0.6;
+  transition:
+    opacity 240ms ease,
+    transform 240ms ease;
+  opacity: 0.45;
+  transform: scale(0.92);
+  transform-origin: center center;
 }
 .cs-card--active {
   opacity: 1;
+  transform: scale(1);
+}
+/* Arrows overlap the side cards */
+.cs-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  background: white;
+  border: 1px solid var(--navy-200);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 2px 12px rgba(37, 66, 93, 0.12);
+  transition:
+    background 140ms,
+    opacity 140ms;
+}
+.cs-arrow:hover {
+  background: var(--grey-light);
+}
+.cs-arrow[disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.cs-arrow--prev {
+  left: max(8px, calc((100% - 760px) / 2 - 28px));
+}
+.cs-arrow--next {
+  right: max(8px, calc((100% - 760px) / 2 - 28px));
 }
 .cs-card__media {
   position: relative;
@@ -2434,13 +2509,22 @@ h2,
     right: -8px;
   }
 
-  /* Comparison: smaller row labels, cards tighten */
+  /* Comparison: smaller row labels, cards tighten. Subgrid still keeps rows
+     auto-sized to the tallest cell, so multi-line copy still aligns. */
+  .cmp-controls {
+    flex-wrap: wrap;
+    row-gap: 12px;
+  }
   .cmp-controls__label {
     font-size: 22px;
     line-height: 28px;
   }
+  .cmp-select,
+  .cmp-multi__trigger {
+    min-width: 200px;
+  }
   .cmp-table {
-    grid-template-columns: 140px repeat(var(--cmp-cols, 3), 1fr);
+    grid-template-columns: 100px repeat(var(--cmp-cols, 3), 1fr);
   }
   .cmp-table__rowlabel {
     font-size: 13px;
@@ -2452,6 +2536,9 @@ h2,
   .cmp-col__head {
     padding: 12px;
   }
+  .cmp-col__brand-logo {
+    max-height: 16px;
+  }
   .cmp-col__product {
     font-size: 16px;
     line-height: 22px;
@@ -2459,6 +2546,7 @@ h2,
   .cmp-col__cell {
     font-size: 13px;
     padding: 10px 12px;
+    line-height: 1.35;
   }
 
   /* Coming-soon: smaller cards */
@@ -2494,6 +2582,27 @@ h2,
   }
   .cd-close {
     right: 556px;
+  }
+}
+
+/* ----- Comparison view: switch to horizontally-scrolling table at 990px -----
+   Below this width, fitting all 4 columns side-by-side squeezes cells and
+   makes the wrapped client copy painful to read. So we lock in fixed column
+   widths and let the user scroll right to compare. The ≤640px block below
+   layers on additional mobile compactness (smaller fonts, stacked controls). */
+@media (max-width: 990px) {
+  .cmp-host {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -16px;
+    padding: 0 16px;
+  }
+  .cmp-table {
+    /* width:max-content forces the grid to honor the fixed column widths
+       instead of squishing to fit the host's clientWidth. */
+    width: max-content;
+    min-width: 100%;
+    grid-template-columns: 160px repeat(var(--cmp-cols, 3), 260px);
   }
 }
 
@@ -2792,13 +2901,24 @@ h2,
     display: none;
   } /* Mobile: dots are enough */
 
-  /* Comparison: simpler stacked-column read */
+  /* Comparison view: stack the controls; scroll the table horizontally with
+     the row-label column sticky-left so context never disappears mid-scroll.
+     CSS subgrid still handles row alignment regardless of cell length. */
+  .cmp-view {
+    gap: 16px;
+  }
   .cmp-controls {
-    gap: 8px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
   }
   .cmp-controls__label {
     font-size: 18px;
     line-height: 24px;
+  }
+  .cmp-select,
+  .cmp-multi {
+    width: 100%;
   }
   .cmp-select,
   .cmp-multi__trigger {
@@ -2807,18 +2927,70 @@ h2,
     padding: 10px 12px;
     font-size: 14px;
   }
-  /* Make the table scroll horizontally so columns keep their proportion */
-  .cmp-host {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  .cmp-table {
-    min-width: 640px;
-    grid-template-columns: 120px repeat(var(--cmp-cols, 3), 200px);
+  .cmp-pills {
+    flex-wrap: wrap;
   }
   .cmp-pill {
     font-size: 12px;
     padding: 4px 8px 4px 10px;
+  }
+  /* Horizontally scroll the table so 4 columns retain readable width.
+     Outer host clips. Inner cmp-host overflows. */
+  .cmp-host {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -16px; /* break out of view padding so scroll feels natural to the screen edge */
+    padding: 0 16px;
+  }
+  .cmp-table {
+    /* width:max-content forces the grid to honor the fixed 220px columns
+       instead of squishing to fit the host's clientWidth. */
+    width: max-content;
+    min-width: 100%;
+    grid-template-columns: 120px repeat(var(--cmp-cols, 3), 220px);
+  }
+  /* Row-label column scrolls along with the cells (sticky-left doesn't work
+     reliably on CSS subgrid items inside a horizontally-scrolling parent —
+     the grid-area moves with the table, defeating the stick). The user
+     scrolls right to compare cells, scrolls left to re-read labels. */
+  .cmp-table__rowlabel {
+    padding: 10px 10px;
+    font-size: 12px;
+    line-height: 1.3;
+  }
+  .cmp-col__media {
+    height: 120px;
+  }
+  .cmp-col__media img {
+    max-width: 78%;
+    max-height: 80%;
+  }
+  .cmp-col__head {
+    padding: 10px 12px;
+  }
+  .cmp-col__brand {
+    height: 22px;
+  }
+  .cmp-col__brand-logo {
+    max-height: 14px;
+  }
+  .cmp-col__product {
+    font-size: 14px;
+    line-height: 18px;
+  }
+  .cmp-col__cell {
+    padding: 10px 12px;
+    font-size: 12px;
+    gap: 6px;
+    line-height: 1.35;
+  }
+  .cmp-mark {
+    width: 16px;
+    height: 16px;
+  }
+  .cmp-mark--x {
+    width: 10px;
+    height: 10px;
   }
 
   /* Coming-soon */

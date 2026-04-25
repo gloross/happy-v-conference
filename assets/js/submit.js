@@ -37,6 +37,49 @@
     }
   }
 
+  /* Klaviyo client subscriptions (public, browser-safe — uses public Company ID
+     as the only credential; no private API key exposed). One master list with
+     a custom `interest` property per product so the marketing team can segment. */
+  const KLAVIYO_COMPANY_ID = 'PtrUzD';
+  const KLAVIYO_LIST_ID    = 'VJ6tcU';
+
+  async function subscribeWaitlist({ email, productName }) {
+    const body = {
+      data: {
+        type: 'subscription',
+        attributes: {
+          custom_source: 'ACOG Conference \u2014 Coming Soon',
+          profile: {
+            data: {
+              type: 'profile',
+              attributes: {
+                email,
+                properties: { interest: productName, source: 'ACOG conference booth' },
+              },
+            },
+          },
+        },
+        relationships: { list: { data: { type: 'list', id: KLAVIYO_LIST_ID } } },
+      },
+    };
+    try {
+      const res = await fetch(
+        `https://a.klaviyo.com/client/subscriptions/?company_id=${encodeURIComponent(KLAVIYO_COMPANY_ID)}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', revision: '2024-10-15' },
+          body: JSON.stringify(body),
+        },
+      );
+      /* Klaviyo returns 202 Accepted on success (queued for processing). */
+      if (res.status === 202 || res.status === 200) return { ok: true };
+      const text = await res.text().catch(() => '');
+      return { ok: false, status: res.status, error: text };
+    } catch (err) {
+      return { ok: false, error: err.message };
+    }
+  }
+
   global.HV = global.HV || {};
-  global.HV.submit = { submitSampleForm };
+  global.HV.submit = { submitSampleForm, subscribeWaitlist };
 })(window);
