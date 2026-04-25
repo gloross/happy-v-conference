@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Happy V — ACOG 2026</title>
+  <meta name="description" content="Happy V at ACOG 2026 — explore our clinically-formulated women's health line." />
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='%23dc6b88' stroke-width='6'/%3E%3Cpath d='M30 35 L50 70 L70 35' fill='none' stroke='%23dc6b88' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind via CDN (no build step) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            navy: {
+              DEFAULT: '#1A3A5C',
+              900: '#102540',
+              800: '#1A3A5C',
+              700: '#244C73',
+            },
+            pink: {
+              brand: '#DC6B88',
+              soft: '#F6DDE2',
+              deep: '#B85272',
+            },
+            cream: '#F9F5F1',
+            mist: '#E3EDF6',
+            sand: '#F4F1ED',
+            ink: '#0E1B2C',
+          },
+          boxShadow: {
+            card: '0 1px 2px rgba(16,37,64,0.06), 0 8px 24px rgba(16,37,64,0.06)',
+            soft: '0 0 0 1px rgba(16,37,64,0.06)',
+          },
+          borderRadius: {
+            xl2: '1.25rem',
+          }
+        },
+      },
+    };
+  </script>
+
+  <link rel="stylesheet" href="assets/css/site.css" />
+</head>
+<body class="font-sans bg-cream text-navy antialiased min-h-screen flex flex-col">
+
+  <!-- Top bar (logo + back) -->
+  <header id="topbar" class="w-full border-b border-navy/5 bg-white/80 backdrop-blur sticky top-0 z-30">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <button id="backBtn" class="text-navy/70 hover:text-navy text-sm flex items-center gap-2 invisible">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back
+      </button>
+      <a href="#/home" class="flex items-center gap-2" aria-label="Happy V home">
+        <svg width="28" height="28" viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#DC6B88" stroke-width="5"/>
+          <path d="M30 35 L50 70 L70 35" fill="none" stroke="#DC6B88" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="font-serif text-xl tracking-[0.18em] text-navy">HAPPY&nbsp;V</span>
+      </a>
+      <div id="progress" class="text-xs text-navy/40 tracking-widest"></div>
+    </div>
+  </header>
+
+  <!-- App view -->
+  <main id="app" class="flex-1 w-full"></main>
+
+  <!-- Bottom nav (hidden until quiz done) -->
+  <nav id="bottomnav" class="hidden fixed bottom-0 inset-x-0 bg-white border-t border-navy/10 z-20">
+    <div class="max-w-6xl mx-auto px-2 grid grid-cols-5 text-[11px] uppercase tracking-wider">
+      <a href="#/home"          data-route="home"          class="navlink"><span aria-hidden="true">🏠</span><span>Home</span></a>
+      <a href="#/recommendation" data-route="recommendation" class="navlink"><span aria-hidden="true">💊</span><span>Products</span></a>
+      <a href="#/comparison"    data-route="comparison"    class="navlink"><span aria-hidden="true">⚖️</span><span>Compare</span></a>
+      <a href="#/coming-soon"   data-route="coming-soon"   class="navlink"><span aria-hidden="true">✨</span><span>Coming Soon</span></a>
+      <a href="#/sample-form"   data-route="sample-form"   class="navlink"><span aria-hidden="true">📦</span><span>Get Samples</span></a>
+    </div>
+  </nav>
+
+  <!-- App scripts -->
+  <script src="assets/js/quiz-data.js"></script>
+  <script src="assets/js/state.js"></script>
+  <script src="assets/js/submit.js"></script>
+  <script src="assets/js/views.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
