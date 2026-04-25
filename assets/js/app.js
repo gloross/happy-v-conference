@@ -9,7 +9,9 @@
 
   const ROUTES = ['home', 'about', 'condition-first', 'narrow-stage', 'patient-first', 'narrow-condition', 'recommendation', 'comparison', 'coming-soon', 'sample-form', 'thank-you'];
   const HOME_LIKE = new Set(['home']);
-  const SHOWS_NAV = new Set(['recommendation', 'comparison', 'coming-soon', 'sample-form', 'thank-you', 'about']);
+  /* Bottom nav is hidden until the user reaches the recommendation. After that
+     it's available everywhere as a quick-switcher. */
+  const POST_SURVEY_ROUTES = new Set(['recommendation', 'comparison', 'coming-soon', 'sample-form', 'thank-you', 'about']);
 
   function currentRoute() {
     const h = (location.hash || '#/home').replace(/^#\//, '');
@@ -25,25 +27,26 @@
   }
 
   function syncNav(route) {
-    const taken = global.HV.state.hasTakenSurvey();
-    if (taken && SHOWS_NAV.has(route)) {
-      bottomNav.classList.remove('hidden');
-    } else {
-      bottomNav.classList.add('hidden');
-    }
+    /* Show on routes that come after the survey is complete. Once the user has
+       hit the recommendation page (sets `lastRec`), keep the nav visible on
+       Home too — it's the quick-restart entry point. */
+    const taken = !!global.HV.state.get('lastRec.primaryId');
+    const show = POST_SURVEY_ROUTES.has(route) || (taken && route === 'home');
+    bottomNav.classList.toggle('hidden', !show);
     bottomNav.querySelectorAll('.navlink').forEach(a => {
       a.classList.toggle('active', a.dataset.route === route);
     });
   }
 
   function syncProgress(route) {
-    const labels = {
-      'condition-first': '1 / 2',
-      'narrow-stage': '2 / 2',
-      'patient-first': '1 / 2',
-      'narrow-condition': '2 / 2',
-    };
-    progress.textContent = labels[route] || '';
+    const steps = {
+      'condition-first': [true, false],
+      'narrow-stage':    [true, true],
+      'patient-first':   [true, false],
+      'narrow-condition':[true, true],
+    }[route];
+    if (!steps) { progress.innerHTML = ''; return; }
+    progress.innerHTML = steps.map(on => `<span class="dot${on ? ' on' : ''}"></span>`).join('');
   }
 
   function render() {
@@ -55,6 +58,10 @@
     }
     app.innerHTML = view.render();
     if (typeof view.init === 'function') view.init(app);
+    document.body.dataset.route = route;
+    /* Path drives chip selected-state color (pink for condition, sky for patient) */
+    const path = global.HV.state.get('path');
+    if (path) document.body.dataset.path = path; else delete document.body.dataset.path;
     syncBack(route);
     syncNav(route);
     syncProgress(route);

@@ -2,9 +2,9 @@
 (function (global) {
   'use strict';
 
-  // PASTE YOUR APPS SCRIPT WEB APP URL HERE (after deploying — see docs/google-apps-script-setup.md)
+  // Apps Script Web App endpoint (deployed 2026-04-25 — see docs/google-apps-script-setup.md).
   // While empty, submissions are stashed in localStorage so nothing is lost during testing.
-  const ENDPOINT = '';
+  const ENDPOINT = 'https://script.google.com/macros/s/AKfycbxDttL-pPl-OIhFUVQ3NUaoeIgbGhoZvqOqfzqy83K1Hrd_N_1RfuWYu-b_o7IHWX8z/exec';
 
   async function submitSampleForm(payload) {
     const body = new URLSearchParams();
