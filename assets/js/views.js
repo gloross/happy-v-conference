@@ -872,6 +872,25 @@
       img: 'assets/img/products/remifemin.jpg',
       short: 'Remifemin',
     },
+    /* Ovarian competitors */
+    'O Positiv — FLO Ovarian Support': {
+      brand: 'O POSITIV',
+      logo: 'assets/img/brands/o-positiv.svg',
+      img: 'assets/img/products/o-positiv-flo-ovarian-support.webp',
+      short: 'FLO Ovarian Support',
+    },
+    'Theralogix — Ovasitol': {
+      brand: 'THERALOGIX',
+      logo: 'assets/img/brands/theralogix.png',
+      img: 'assets/img/products/theralogix-ovasitol.webp',
+      short: 'Ovasitol',
+    },
+    'Wholesome Story - Myo & D-Chiro Inositol': {
+      brand: 'WHOLESOME STORY',
+      logo: 'assets/img/brands/wholesome-story.png',
+      img: 'assets/img/products/wholesome-story-myo-d-chiro-inositol.webp',
+      short: 'Myo & D-Chiro Inositol',
+    },
   };
   const HAPPY_V_BRAND = {brand: 'HAPPY V', logo: 'assets/img/brands/happy-v.png'};
 
@@ -913,7 +932,7 @@
       }),
     ];
     return /* html */ `
-      <div class="cmp-table" style="--cmp-cols:${cols.length};">
+      <div class="cmp-table" style="--cmp-cols:${cols.length}; --cmp-rows:${m.rows.length};">
         <div class="cmp-table__rowlabels">
           <div class="cmp-table__corner"></div>
           ${m.rows.map((r) => `<div class="cmp-table__rowlabel">${escape(r[0])}</div>`).join('')}
@@ -921,7 +940,7 @@
         ${cols
           .map(
             (c, ci) => `
-          <div class="cmp-col${c.isPrimary ? ' cmp-col--primary' : ''}">
+          <div class="cmp-col${c.isPrimary ? ' cmp-col--primary' : ''}" style="background:${c.imgBg};">
             <div class="cmp-col__media" style="background:${c.imgBg};">
               ${
                 c.img
