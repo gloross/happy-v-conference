@@ -296,7 +296,7 @@ B6`,
     let pages = condIds.map(pageFor).filter(Boolean);
 
     // Stage-only fallback: no conditions but stages selected → single page
-    if (!pages.length) {
+    if (!pages.length && stageIds.length) {
       const fallbackPrimaryId = isMenoStage ? 'meno' : 'prepro';
       pages = [
         {
@@ -307,6 +307,18 @@ B6`,
           context: stageLabel || 'Recommended for your patient',
         },
       ];
+    }
+
+    /* Skip path — neither conditions nor stages selected. Show every product
+       as its own slide so the user can browse the full catalogue. */
+    if (!pages.length) {
+      pages = Object.values(products).map((p) => ({
+        conditionId: null,
+        conditionLabel: '',
+        primary: p,
+        complementary: [],
+        context: '',
+      }));
     }
 
     return {

@@ -367,6 +367,12 @@
       });
     });
     root.querySelector('#nextBtn').addEventListener('click', () => (location.hash = '#/narrow-condition'));
+    root.querySelector('#skipBtn').addEventListener('click', () => {
+      S().set('stages', []);
+      S().set('conditions', []);
+      S().set('path', 'skip');
+      location.hash = '#/recommendation';
+    });
     updateMatchPill();
   }
 
@@ -417,7 +423,12 @@
       });
     });
     root.querySelector('#nextBtn').addEventListener('click', () => (location.hash = '#/recommendation'));
-    root.querySelector('#skipBtn').addEventListener('click', () => (location.hash = '#/recommendation'));
+    root.querySelector('#skipBtn').addEventListener('click', () => {
+      S().set('stages', []);
+      S().set('conditions', []);
+      S().set('path', 'skip');
+      location.hash = '#/recommendation';
+    });
     updateMatchPill();
   }
 
@@ -722,10 +733,11 @@
   const comparison = () => {
     const allIds = Object.keys(D().competitorMatrix);
     const compareWith = S().get('compareWith');
-    /* Default to Pre + Pro when the user lands on /comparison directly (e.g.
-       via the bottom nav). Honor an explicit Compare click on a recommendation
-       card (sets `compareWith`); otherwise default to prepro regardless of the
-       last recommended product. */
+    /* Honor an explicit Compare click on a recommendation card (sets
+       `compareWith`) once, then clear it so any subsequent visit — bottom-nav
+       tab, reload, deep link — defaults to Pre + Pro instead of the last
+       compared product. */
+    if (compareWith) S().set('compareWith', null);
     const initial = compareWith || 'prepro';
     return /* html */ `
     <section class="view-enter cmp-view">
