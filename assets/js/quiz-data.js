@@ -617,11 +617,39 @@ Soothing effects for cramping, nausea, IBS symptoms, acid/heartburn relief`,
     .map((id) => withLabel(id, COMPLEMENTARY_LABELS[id]))
     .filter(Boolean);
 
+  /* Patient-first flow step 2: the conditions shown are filtered by the
+     life stage selected in step 1. Per client spec, each age band has a
+     curated list of clinically relevant concerns. */
+  const PATIENT_FIRST_LABELS = {
+    bv: 'Recurrent BV / Vaginal Imbalance',
+    uti: 'UTI',
+    menopause: 'Menopause',
+    perimenopause: 'Perimenopause Symptoms',
+    cycle: 'Cycle Irregularity / PMS',
+    bloating: 'Bloating / Digestive Discomfort',
+    odor: 'Body Odor Concerns',
+    dryness: 'Vaginal Dryness',
+    postmeno: 'Post-menopause Maintenance',
+    prenatal: 'Prenatal Gut Health',
+  };
+  const conditionsByStage = {
+    repro:     ['bv', 'uti', 'cycle', 'bloating', 'odor'],
+    periRepro: ['bv', 'uti', 'cycle', 'perimenopause', 'bloating', 'odor'],
+    menoTrans: ['menopause', 'uti', 'bloating', 'dryness'],
+    postMeno:  ['postmeno', 'uti', 'dryness'],
+    pregnancy: ['bv', 'uti', 'prenatal'],
+  };
+  const patientConditionsForStage = (stageId) => {
+    const ids = conditionsByStage[stageId] || primaryConditionIds;
+    return ids.map((id) => withLabel(id, PATIENT_FIRST_LABELS[id])).filter(Boolean);
+  };
+
   global.HV.data = {
     products,
     conditions,
     primaryConditions,
     complementaryConditions,
+    patientConditionsForStage,
     lifeStages,
     primaryByCondition,
     complementaryByCondition,

@@ -374,6 +374,10 @@
     const sel = S().get('conditions', []) || [];
     const stages = S().get('stages', []) || [];
     const count = D().matchCount({stages, conditions: sel});
+    /* Patient-first flow step 2: conditions are filtered by the life stage
+       picked in step 1. Each age band has a clinically curated list per spec. */
+    const stageId = stages[0];
+    const conds = D().patientConditionsForStage(stageId);
     return /* html */ `
     <section class="view-enter quiz-view">
       <div class="quiz-head">
@@ -382,13 +386,9 @@
         <span class="match-pill" id="matchPill">${count} matching products</span>
       </div>
       <div class="chip-grid">
-        ${D()
-          .primaryConditions.map((c) =>
-            chip({id: c.id, attr: 'data-cond', icon: c.icon, label: c.label, selected: sel.includes(c.id)}),
-          )
+        ${conds
+          .map((c) => chip({id: c.id, attr: 'data-cond', icon: c.icon, label: c.label, selected: sel.includes(c.id)}))
           .join('')}
-      </div>
-
       </div>
       ${quizActions({nextLabel: 'See recommendation'})}
     </section>`;
@@ -1299,6 +1299,24 @@
       btn.disabled = true;
       btn.textContent = 'Submitting…';
 
+      /* Derive the actual product IDs the user would see in their recommendation
+         (primaries + complementaries) so the marketing team can pack the right
+         sample kit from the spreadsheet without re-running the matching logic. */
+      const conds = S().get('conditions', []) || [];
+      const stages = S().get('stages', []) || [];
+      const primaryByCondition = D().primaryByCondition;
+      const complementaryByCondition = D().complementaryByCondition;
+      const primarySet = new Set();
+      const complementarySet = new Set();
+      conds.forEach((id) => {
+        if (primaryByCondition[id]) primarySet.add(primaryByCondition[id]);
+        (complementaryByCondition[id] || []).forEach((p) => complementarySet.add(p));
+      });
+      /* 45-55 / 55+ rule: always surface Meno AM+PM as secondary unless primary is meno */
+      if (stages.includes('menoTrans') || stages.includes('postMeno')) complementarySet.add('meno');
+      /* Don't double-count: anything that's already a primary shouldn't also list as complementary */
+      primarySet.forEach((id) => complementarySet.delete(id));
+
       const payload = {
         fullName: f.fullName.value.trim(),
         email: f.email.value.trim(),
@@ -1308,11 +1326,13 @@
         contactRole: f.contactRole.value.trim(),
         contactEmailPhone: f.contactEmailPhone.value.trim(),
         wantsKit: root.querySelector('#suggestKit').checked ? 'yes' : 'no',
-        conditions: (S().get('conditions', []) || []).join('|'),
-        stages: (S().get('stages', []) || []).join('|'),
+        conditions: conds.join('|'),
+        stages: stages.join('|'),
         path: S().get('path', '') || '',
+        primaryProducts: [...primarySet].join('|'),
+        complementaryProducts: [...complementarySet].join('|'),
+        /* Kept for back-compat with the original spreadsheet header. */
         primaryRec: S().get('lastRec.primaryId', '') || '',
-        raffleEntry: 'yes',
       };
       const res = await global.HV.submit.submitSampleForm(payload);
       if (res.ok) {
