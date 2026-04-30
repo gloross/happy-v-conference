@@ -700,7 +700,7 @@ h2,
   gap: 24px;
 }
 .cd-image {
-  height: 344px;
+  height: 250px;
   border-radius: var(--r-big);
   display: flex;
   align-items: center;
@@ -812,6 +812,71 @@ h2,
 }
 .cd-acc--open .cd-acc__body {
   display: block;
+}
+.cd-acc__text {
+  margin: 0;
+}
+.cd-acc__body p + p {
+  margin-top: 8px;
+}
+
+/* Ingredients table inside the Clinical Details drawer */
+.cd-ing {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  line-height: 22px;
+  color: #25425d;
+}
+.cd-ing thead th {
+  text-align: left;
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 500;
+  color: #25425d;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(37, 66, 93, 0.12);
+}
+.cd-ing tbody td {
+  padding: 12px;
+  vertical-align: top;
+  color: #51687d;
+}
+.cd-ing tbody td + td {
+  border-left: 1px solid rgba(37, 66, 93, 0.08);
+}
+.cd-ing__list {
+  list-style: disc;
+  margin: 0;
+  padding-left: 18px;
+}
+.cd-ing__list li {
+  padding: 2px 0;
+}
+
+/* Add-to-sample-box CTA */
+.cd-cta {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+}
+.cd-add {
+  width: 100%;
+  max-width: 360px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.cd-add .cd-add__check {
+  display: none;
+}
+.cd-add[aria-pressed='true'] {
+  background: #1f7a4f;
+  border-color: #1f7a4f;
+}
+.cd-add[aria-pressed='true'] .cd-add__check {
+  display: inline-block;
 }
 
 /* ----- Recommendation view ----------------------------------------- */
@@ -2578,7 +2643,7 @@ h2,
 
   /* Clinical Details overlay: full-width on tablet */
   .cd-drawer {
-    width: 540px;
+    width: 580px;
   }
   .cd-close {
     right: 556px;

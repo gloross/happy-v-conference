@@ -65,18 +65,18 @@
       <div class="home-stats-wrap">
         <div class="home-stats">
           <div class="home-stat">
-            <p class="home-stat__num">300+</p>
+            <p class="home-stat__num">1000</p>
             <p class="home-stat__label">Physician partnerships</p>
           </div>
           <div class="home-stats__divider" aria-hidden="true"></div>
           <div class="home-stat">
-            <p class="home-stat__num">23 years</p>
-            <p class="home-stat__label">cGMP manufacturing</p>
+            <p class="home-stat__num">250,000+</p>
+            <p class="home-stat__label">Happy Customers</p>
           </div>
           <div class="home-stats__divider" aria-hidden="true"></div>
           <div class="home-stat">
-            <p class="home-stat__num">55K+</p>
-            <p class="home-stat__label">Active customers</p>
+            <p class="home-stat__num">28 years</p>
+            <p class="home-stat__label">cGMP manufacturing</p>
           </div>
         </div>
       </div>
@@ -125,18 +125,18 @@
           </div>
           <div class="about-stats">
             <div class="about-stat">
-              <p class="about-stat__num">300+</p>
+              <p class="about-stat__num">1000</p>
               <p class="about-stat__label">Physician partnerships</p>
             </div>
             <div class="about-stats__divider" aria-hidden="true"></div>
             <div class="about-stat">
-              <p class="about-stat__num">23 years</p>
-              <p class="about-stat__label">cGMP manufacturing</p>
+              <p class="about-stat__num">250,000+</p>
+              <p class="about-stat__label">Happy Customers</p>
             </div>
             <div class="about-stats__divider" aria-hidden="true"></div>
             <div class="about-stat">
-              <p class="about-stat__num">55K+</p>
-              <p class="about-stat__label">Active customers</p>
+              <p class="about-stat__num">28 years</p>
+              <p class="about-stat__label">cGMP manufacturing</p>
             </div>
           </div>
         </div>
@@ -153,12 +153,11 @@
 
           <div class="about-body">
             <p class="about-para">
-              <strong>23+ years of manufacturing heritage</strong> — Founded under Nutritional
-              Fundamentals for Health (NFI) in 1997, Happy V is manufactured in a cGMP-compliant
+              <strong>23+ years of manufacturing heritage</strong> — Founded under Nutrition Formulators, Inc.(NFI) in 1997, Happy V is manufactured in a cGMP-compliant
               facility and is a proud member of the International Probiotics Association (IPA).
             </p>
             <p class="about-para">
-              With <strong>300+ physician partnerships and 55,000+ active customers</strong>, our
+              With <strong>1000 physician partnerships and 55,000+ active customers</strong>, our
               products are trusted by healthcare professionals and sold on Amazon, Walmart,
               TikTok Shop, and direct-to-consumer channels.
             </p>
@@ -655,20 +654,48 @@
     setActive(0);
   }
 
-  /* Clinical Details overlay (Figma 157:4445): right-side drawer, accordion of
-     Strains / Dosage / Mechanism / Clinical Proof / Differentiation. */
+  /* Clinical Details overlay (Figma 157:4445): right-side drawer.
+     Per-product accordion sections from p.clinical.sections, then an
+     "Ingredients" accordion containing a 3-col table (Ingredients / Dosage /
+     Substantiation), then an "Add to sample box" CTA at the bottom. Sample box
+     is persisted on `state.sampleBox` and surfaced on the sample form. */
   function openClinicalDetails(productId) {
     const p = D().products[productId];
     if (!p) return;
     const tags = ['Strain-level transparency', 'No proprietary blends', 'Therapeutic CFU dosing'];
-    const sections = [
-      {id: 'strains', label: 'Strains', body: p.detail},
-      {id: 'dosage', label: 'Dosage', body: p.dosage},
-      {id: 'mech', label: 'Mechanism', body: p.mechanism},
-      {id: 'proof', label: 'Clinical Proof', body: p.studies},
-      {id: 'diff', label: 'Differentiation', body: p.differentiation},
-    ];
+    const clinical = p.clinical || {sections: [], ingredients: null};
+    const ing = clinical.ingredients;
+    const sections = [...clinical.sections];
+    if (ing) {
+      sections.push({
+        label: 'Ingredients',
+        kind: 'ingredients',
+        ingredients: ing,
+      });
+    }
     const stars = `<span class="rec-stars">${'<img src="assets/img/icons/star.svg" alt="" width="20" height="20"/>'.repeat(5)}</span>`;
+    const inBox = (S().get('sampleBox', []) || []).includes(productId);
+
+    const renderBody = (s) => {
+      if (s.kind === 'ingredients') {
+        return /* html */ `
+          <table class="cd-ing">
+            <thead>
+              <tr><th>Ingredients</th><th>Dosage</th><th>Substantiation</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><ul class="cd-ing__list">${s.ingredients.items.map((i) => `<li>${escape(i)}</li>`).join('')}</ul></td>
+                <td>${escape(s.ingredients.dosage || '')}</td>
+                <td>${escape(s.ingredients.substantiation || '')}</td>
+              </tr>
+            </tbody>
+          </table>`;
+      }
+      /* Preserve newlines within section bodies (e.g. Strains list) */
+      return `<p class="cd-acc__text">${escape(s.body || '—').replace(/\n/g, '<br/>')}</p>`;
+    };
+
     const overlay = document.createElement('div');
     overlay.className = 'cd-overlay';
     overlay.innerHTML = /* html */ `
@@ -699,11 +726,19 @@
                     <svg class="cd-acc__minus" width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" stroke="#25425D" stroke-width="1.5"/><path d="M7 12h10" stroke="#25425D" stroke-width="1.5" stroke-linecap="round"/></svg>
                   </span>
                 </button>
-                <div class="cd-acc__body">${escape(s.body || '—')}</div>
+                <div class="cd-acc__body">${renderBody(s)}</div>
               </div>
             `,
               )
               .join('')}
+          </div>
+          <div class="cd-cta">
+            <button class="btn-primary cd-add" type="button" data-cd-add aria-pressed="${inBox}">
+              <span class="cd-add__label">${inBox ? 'Added to sample box' : 'Add to sample box'}</span>
+              <svg class="cd-add__check" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
           </div>
         </div>
       </aside>`;
@@ -724,6 +759,18 @@
     });
     overlay.querySelectorAll('[data-cd-acc]').forEach((acc) => {
       acc.querySelector('.cd-acc__head').addEventListener('click', () => acc.classList.toggle('cd-acc--open'));
+    });
+    /* Add to sample box — toggle product in/out of state.sampleBox */
+    const addBtn = overlay.querySelector('[data-cd-add]');
+    addBtn.addEventListener('click', () => {
+      const list = S().get('sampleBox', []) || [];
+      const i = list.indexOf(productId);
+      if (i >= 0) list.splice(i, 1);
+      else list.push(productId);
+      S().set('sampleBox', list);
+      const isIn = list.includes(productId);
+      addBtn.setAttribute('aria-pressed', String(isIn));
+      addBtn.querySelector('.cd-add__label').textContent = isIn ? 'Added to sample box' : 'Add to sample box';
     });
   }
 
@@ -1288,7 +1335,11 @@
       .filter(Boolean);
     const path = S().get('path');
     const pathLabel = path === 'condition' ? 'Condition-first path' : path === 'patient' ? 'Patient-first path' : '';
-    const parts = [...conds, ...stages, pathLabel].filter(Boolean);
+    /* Sample box additions take priority — they're an explicit user choice from
+       the Clinical Details drawer. Show those first, then quiz context. */
+    const boxIds = S().get('sampleBox', []) || [];
+    const boxLabels = boxIds.map((id) => (D().products[id] || {}).name).filter(Boolean);
+    const parts = [...boxLabels, ...conds, ...stages, pathLabel].filter(Boolean);
     if (parts.length) {
       summaryEl.textContent = parts.join(' • ');
     }
@@ -1329,6 +1380,12 @@
       /* Don't double-count: anything that's already a primary shouldn't also list as complementary */
       primarySet.forEach((id) => complementarySet.delete(id));
 
+      /* Products explicitly added from the Clinical Details drawer's
+         "Add to sample box" CTA. Map IDs to product names so the marketing
+         team gets a readable list in the spreadsheet. */
+      const sampleBoxIds = S().get('sampleBox', []) || [];
+      const sampleBoxNames = sampleBoxIds.map((id) => (D().products[id] || {}).name).filter(Boolean);
+
       const payload = {
         fullName: f.fullName.value.trim(),
         email: f.email.value.trim(),
@@ -1343,6 +1400,7 @@
         path: S().get('path', '') || '',
         primaryProducts: [...primarySet].join('|'),
         complementaryProducts: [...complementarySet].join('|'),
+        sampleBox: sampleBoxNames.join('|'),
         /* Kept for back-compat with the original spreadsheet header. */
         primaryRec: S().get('lastRec.primaryId', '') || '',
       };

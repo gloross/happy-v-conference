@@ -14,10 +14,10 @@
       strains: '7 probiotic strains + PreforPro® bacteriophage prebiotic',
       dosage: '2 capsules/day with food',
       mechanism:
-        'PreforPro® destroys harmful bacteria via bacteriophage action → probiotic strains repopulate → produce lactic acid + H₂O₂ → restore acidic vaginal pH → inhibit pathogens.',
+        'PreforPro® bacteriophage prebiotic first destroys harmful bacteria from the inside out, clearing the way for 7 clinically studied probiotic strains to repopulate the vaginal microbiome. The probiotics then feed on glucose-rich prebiotics in the vaginal epithelial cells, producing Lactic Acid and Hydrogen Peroxide to create an acidic environment where good bacteria thrive and pathogens cannot.',
       proof: '7 strain-specific clinical studies showing efficacy in reducing BV recurrence by 73%.',
       detail:
-        '7 probiotic strains: LA-14® (L. acidophilus, 8B CFU), HN001™ (L. rhamnosus, 2B CFU), CCFM1110™ (L. crispatus, 2B CFU), HLG13™ (L. gasseri, 2B CFU), HR7™ (L. reuteri, 2B CFU), HN019™ (B. lactis, 3B CFU), DE111® (B. subtilis, 1B CFU), PreforPro® bacteriophage prebiotic 15mg',
+        '7 probiotic strains: LA-14® (L. acidophilus, 8B CFU) · HN001™ (L. rhamnosus, 2B CFU) · CCFM1110™ (L. crispatus, 2B CFU) · HLG13™ (L. gasseri, 2B CFU) · HR7™ (L. reuteri, 2B CFU) · HN019™ (B. lactis, 3B CFU) · DE111® (B. subtilis, 1B CFU). PreforPro® bacteriophage prebiotic 15mg',
       differentiation:
         'Only formula combining phage-based prebiotic (no bloating) + 7 vaginal-specific strains with individual subspecies IDs + Biotin for vaginal mucosa - no proprietary blend masking',
       studies: 'Yes',
@@ -147,6 +147,135 @@ B6`,
     },
   };
 
+  /* --- Clinical Details drawer copy --------------------------------------------
+     Per-product accordion sections + ingredient table for the right-side
+     "Clinical Details" drawer. Copy is taken VERBATIM from the client's
+     spreadsheet (Untitled spreadsheet (10).xlsx) — do not rewrite. */
+  const clinicalByProduct = {
+    prepro: {
+      sections: [
+        {
+          label: 'Mechanism action',
+          body: 'PreforPro® bacteriophage prebiotic first destroys harmful bacteria from the inside out, clearing the way for 7 clinically studied probiotic strains to repopulate the vaginal microbiome. The probiotics then feed on glucose-rich prebiotics in the vaginal epithelial cells, producing Lactic Acid and Hydrogen Peroxide to create an acidic environment where good bacteria thrive and pathogens cannot.',
+        },
+        {
+          label: 'Strains',
+          body: '7 probiotic strains: LA-14® (L. acidophilus, 8B CFU) · HN001™ (L. rhamnosus, 2B CFU) · CCFM1110™ (L. crispatus, 2B CFU) · HLG13™ (L. gasseri, 2B CFU) · HR7™ (L. reuteri, 2B CFU) · HN019™ (B. lactis, 3B CFU) · DE111® (B. subtilis, 1B CFU)\nPreforPro® bacteriophage prebiotic 15mg',
+        },
+      ],
+      ingredients: {
+        items: [
+          'Biotin Lactobacillus acidophilus(as LA-14®)',
+          'Bifidobacterium lactis(HN019™)',
+          'Lactobacillus rhamnosus(as HN001™)',
+          'Lactobacillus crispatus(as CCFM1110™)',
+          'Lactobacillus gasseri(as HLG13™)',
+          'Lactobacillus reuteri(as HR7™)',
+          'Bacillus subtilis(as DE111®)',
+          'PreforPro® (LH01, T4D, LL12 - Myoviridae, LL5 - Siphoviridae)',
+        ],
+        dosage: '2 capsules/day with food',
+        substantiation: 'Strain-level studies',
+      },
+    },
+    debloat: {
+      sections: [
+        {
+          label: 'Mechanism action',
+          body: '23 enzymes replenish what the body can no longer produce efficiently, reaching the stomach and small intestine before food to break down proteins, fats, carbs, fiber, and dairy at the source. This complete breakdown allows nutrients to absorb directly into the bloodstream, eliminating the gut discomfort caused by undigested food. The result is better nutrient absorption, less bloating, and more energy, with the digestive system working efficiently rather than struggling.',
+        },
+        {
+          label: 'Enzymes',
+          body: '23 digestive enzymes (Protease, Papain, Amylase, Lipase, Lactase + 18 more)\nGinger Extract\nPeppermint Extract\nSodium Bicarbonate',
+        },
+      ],
+      ingredients: {
+        items: ['Sodium', 'Ginger Extract (Zingiber officinale) (root)', 'Peppermint', 'Digestive & Debloat Enzymes'],
+        dosage: '2 capsules/day with food',
+        substantiation: 'Enzyme-level studies',
+      },
+    },
+    cranberry: {
+      sections: [
+        {
+          label: 'Mechanism action',
+          body: "Pacran® cranberry first prevents E. coli from latching onto the urinary tract wall, stopping biofilm formation at the source. UClear® D-Mannose then attracts and binds to the detached bacteria's pili, trapping them onto the sugar molecule so the body can flush them out. Consistent daily use maintains this dual-action defense to prevent future infections from taking hold.",
+        },
+      ],
+      ingredients: {
+        items: ['Vitamin C', 'Cranberry Whole Fruit Powder (Pacran®)', 'D-Mannose', '(Uclear®)'],
+        dosage: '2 capsules/day with food',
+        substantiation: 'Patented and clinically studied',
+      },
+    },
+    meno: {
+      sections: [
+        {
+          label: 'Mechanism action',
+          body: 'The AM capsule resets hormone metabolism and cortisol levels at the start of the day, while its effects carry through the afternoon to stabilize mood and manage heat and stress responses. As evening arrives, the PM capsule activates serotonin and melatonin precursors to ease the body into relaxation, while keeping cortisol spikes in check. Overnight, HMRlignan™ and Graminex® work during sleep to reduce night sweats, support vaginal health, and recalibrate estrogen levels, so the body fully recovers before the cycle repeats.',
+        },
+        {
+          label: 'Key Actives',
+          body: 'Graminex® G63® Flower Pollen Extract · HMRlignan™ Norway Spruce Lignans · Sensoril® Ashwagandha · Lifenol™ Hop Extract (AM) · 5-HTP (PM)',
+        },
+      ],
+      ingredients: {
+        items: [
+          'AM: Supports estrogen metabolism (DIM/Genistein), reduces cortisol (Sensoril®), hot flash suppression (HMRlignan™/Lifenol™), detox (BroccoRaphanin®)',
+          'PM: Serotonin/melatonin precursor (5-HTP), sleep/relaxation (Magnesium/Zinc), night sweat reduction (Graminex®/Red Clover), cortisol modulation (Sensoril®)',
+        ],
+        dosage: '1 AM capsule with breakfast + 1 PM capsule 30 min before bed',
+        substantiation: '5 patented branded ingredients with published citations',
+      },
+    },
+    chlorophyll: {
+      sections: [
+        {
+          label: 'Mechanism action',
+          body: 'Sodium Copper Chlorophyllin acts as an antioxidant in the intestines, neutralizing harmful free radicals (ROS). It then binds strongly to toxins before they can be absorbed into the body, blocking them at the intestinal level. The result is full-body detoxification, reduced internal odor at the source, and overall immune support.',
+        },
+      ],
+      ingredients: {
+        items: ['Sodium Copper Chlorophyllin (Mulberry Leaf Extract)', 'Water', 'Glycerin', 'Spearmint Oil'],
+        dosage: '2 droppers (2ml) daily in water',
+        substantiation: 'Ingredient-level mechanism explanation, batch-specific COA',
+      },
+    },
+    ovarian: {
+      sections: [
+        {
+          label: 'Mechanism action',
+          body: 'DIM, BroccoRaphanin®, and Folate support estrogen metabolism and liver detox pathways, while the clinically studied 40:1 Myo/D-Chiro Inositol ratio restores ovarian function, cycle regularity, and insulin sensitivity. CoQ10, Selenium, and ALA then provide antioxidant protection at the cellular level - safeguarding egg quality and supporting long-term reproductive wellness from the inside out.',
+        },
+        {
+          label: 'Key Actives',
+          body: 'Myo-Inositol + D-Chiro-Inositol (40:1 ratio), DIM, BroccoRaphanin®, CoQ10, Folate, ALA, Selenium, Chromium, Vitamin D3, Zinc',
+        },
+      ],
+      ingredients: {
+        items: [
+          'Vitamin D (as Cholecalciferol)',
+          'Folate (as L-5-Methyltetrahydrofolate Calcium)',
+          'Zinc (as Zinc Citrate)',
+          'Selenium (as Selenium Amino Acid Chelate)',
+          'Chromium (as Chromium Picolinate)',
+          'Myo-Inositol',
+          'Alpha Lipoic Acid',
+          'DI-Indolylmethane Powder',
+          'Coenzyme Q-10',
+          'D-Chiro-Inositol',
+          'BroccoRaphanin® (Basic Broccoli Raffinate Seed Extract)',
+        ],
+        dosage: '1 scoop twice daily in water · powder format',
+        substantiation: 'Third-party tested',
+      },
+    },
+  };
+  /* Attach clinical block to each product so the drawer can pull from p.clinical */
+  Object.entries(clinicalByProduct).forEach(([id, c]) => {
+    if (products[id]) products[id].clinical = c;
+  });
+
   // --- Conditions / life stages ----------------------------------------------
   /* Icon stacks reproduce Figma's exact composition: each chip icon is a 56×56
      container with absolutely-positioned <img>s using Figma's inset percentages.
@@ -221,7 +350,6 @@ B6`,
     {id: 'periRepro', label: 'Reproductive / perimenopause', range: '(35-45)'},
     {id: 'menoTrans', label: 'Menopause transition', range: '(45-55)'},
     {id: 'postMeno', label: 'Post-menopause', range: '(55+)'},
-    {id: 'pregnancy', label: 'Pregnant / postpartum', range: ''},
   ];
 
   // --- Primary product recommendation by "what are we solving for" -----------
@@ -392,17 +520,14 @@ B6`,
           'Enzyme-level studies',
           'Consumer perception only',
           'Mechanism-based differentiation, no RCTs',
-          'Third-party tested for purity and potency',
+          'Consumer perception only',
         ],
         [
-          `
-          Anti-inflammatory
-Anti-spasmodic
-Soothing effects for cramping, nausea, IBS symptoms, acid/heartburn relief`,
-          'Yes',
-          'Primarily targets water retention and hormonal bloating',
-          'None — enzymes-only formula',
-          'Yes',
+          `Digestive Comfort & Gut Health Support*`,
+          'Yes - supports digestive comfort, gut balance, and a healthy inflammatory response*',
+          'Primarily focused on occasional bloating support',
+          'Enzyme-focused; limited support beyond digestion',
+          'Basic digestive support',
         ],
         [
           'Label transparency',
@@ -445,7 +570,7 @@ Soothing effects for cramping, nausea, IBS symptoms, acid/heartburn relief`,
         ],
         [
           'Active ingredients',
-          '3 clinically dosed actives: UClear® D-Mannose, Pacran® Cranberry Extract, Vitamin C',
+          'UClear® D-Mannose, Pacran® Cranberry Extract, Vitamin C',
           '5 active ingredients: D-Mannose, Vitamin D3, Turmeric Root Extract, Green Tea Leaf Extract, Black Pepper Fruit Powder',
           '4 active ingredients: Pacran® Cranberry, Vitamin C, Calcium, Bacillus Coagulans',
           '1 active ingredient: Gikacran® concentrated cranberry fruit juice extract ',
@@ -645,11 +770,10 @@ Soothing effects for cramping, nausea, IBS symptoms, acid/heartburn relief`,
     prenatal: 'Prenatal Gut Health',
   };
   const conditionsByStage = {
-    repro:     ['bv', 'uti', 'cycle', 'bloating', 'odor'],
+    repro: ['bv', 'uti', 'cycle', 'bloating', 'odor'],
     periRepro: ['bv', 'uti', 'cycle', 'perimenopause', 'bloating', 'odor'],
     menoTrans: ['menopause', 'uti', 'bloating', 'dryness'],
-    postMeno:  ['postmeno', 'uti', 'dryness'],
-    pregnancy: ['bv', 'uti', 'prenatal'],
+    postMeno: ['postmeno', 'uti', 'dryness'],
   };
   const patientConditionsForStage = (stageId) => {
     const ids = conditionsByStage[stageId] || primaryConditionIds;
