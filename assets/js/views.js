@@ -655,8 +655,14 @@
   }
 
   function openClinicalDetails(productId) {
-    const p = D().products[productId];
+    /* Look up across both live products (sold today) and coming-soon products
+       (preorder). Both share the `clinical` shape so the drawer renders the
+       same way; only the "Add to sample box" CTA and the rating row differ. */
+    const p =
+      D().products[productId] ||
+      (D().comingSoon || []).find((c) => c.id === productId);
     if (!p) return;
+    const isPreorder = !!p.preorder;
     /* Per client (2026-04-30): only Pre + Pro shows the full transparency
        trio. Every other product just shows "No proprietary blends". */
     const tags = productId === 'prepro'
@@ -703,12 +709,18 @@
       </button>
       <aside class="cd-drawer" role="dialog" aria-modal="true" aria-labelledby="cdTitle">
         <div class="cd-content">
-          <div class="cd-image" style="background:${escape(p.bgGradient || p.bg || '#A6CDEC')};">
-            ${p.img ? `<img src="${escape(p.img)}" alt="" onerror="this.style.display='none';"/>` : `<span class="cd-image__label">${escape(p.shortName)}</span>`}
+          <div class="cd-image${isPreorder ? ' cd-image--preorder' : ''}" style="background:${escape(p.bgGradient || p.bg || '#A6CDEC')};">
+            ${isPreorder
+              ? `<span class="cs-card__pill">Coming soon...</span>`
+              : (p.img
+                  ? `<img src="${escape(p.img)}" alt="" onerror="this.style.display='none';"/>`
+                  : `<span class="cd-image__label">${escape(p.shortName || '')}</span>`)}
           </div>
           <div class="cd-meta">
             <h2 id="cdTitle" class="cd-title">${escape(p.name)}</h2>
-            <div class="cd-rating">${stars}<span class="cd-rcount">(${p.reviews.toLocaleString()})</span></div>
+            ${p.reviews
+              ? `<div class="cd-rating">${stars}<span class="cd-rcount">(${p.reviews.toLocaleString()})</span></div>`
+              : ''}
           </div>
           <div class="cd-tags">
             ${tags.map((t) => `<span class="cd-tag">${escape(t)}</span>`).join('')}
@@ -731,14 +743,16 @@
               )
               .join('')}
           </div>
-          <div class="cd-cta">
+          ${isPreorder
+            ? ''
+            : `<div class="cd-cta">
             <button class="btn-primary cd-add" type="button" data-cd-add aria-pressed="${inBox}">
               <span class="cd-add__label">${inBox ? 'Added to sample box' : 'Add to sample box'}</span>
               <svg class="cd-add__check" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </button>
-          </div>
+          </div>`}
         </div>
       </aside>`;
     document.body.appendChild(overlay);
@@ -759,18 +773,21 @@
     overlay.querySelectorAll('[data-cd-acc]').forEach((acc) => {
       acc.querySelector('.cd-acc__head').addEventListener('click', () => acc.classList.toggle('cd-acc--open'));
     });
-    /* Add to sample box — toggle product in/out of state.sampleBox */
+    /* Add to sample box — toggle product in/out of state.sampleBox.
+       Skipped for preorder products (no sample-kit pathway yet). */
     const addBtn = overlay.querySelector('[data-cd-add]');
-    addBtn.addEventListener('click', () => {
-      const list = S().get('sampleBox', []) || [];
-      const i = list.indexOf(productId);
-      if (i >= 0) list.splice(i, 1);
-      else list.push(productId);
-      S().set('sampleBox', list);
-      const isIn = list.includes(productId);
-      addBtn.setAttribute('aria-pressed', String(isIn));
-      addBtn.querySelector('.cd-add__label').textContent = isIn ? 'Added to sample box' : 'Add to sample box';
-    });
+    if (addBtn) {
+      addBtn.addEventListener('click', () => {
+        const list = S().get('sampleBox', []) || [];
+        const i = list.indexOf(productId);
+        if (i >= 0) list.splice(i, 1);
+        else list.push(productId);
+        S().set('sampleBox', list);
+        const isIn = list.includes(productId);
+        addBtn.setAttribute('aria-pressed', String(isIn));
+        addBtn.querySelector('.cd-add__label').textContent = isIn ? 'Added to sample box' : 'Add to sample box';
+      });
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -1218,6 +1235,17 @@
     dots.forEach((d, i) => d.addEventListener('click', () => setActive(i)));
     root.querySelector('#csArrowPrev')?.addEventListener('click', () => setActive(idx - 1));
     root.querySelector('#csArrowNext')?.addEventListener('click', () => setActive(idx + 1));
+    /* Wire the per-card "Clinical Details" button to the same drawer the live
+       products use. We look up the product by its slide index so we don't have
+       to plumb IDs through the DOM. */
+    cards.forEach((card, i) => {
+      const btn = card.querySelector('.cs-card__details');
+      if (!btn) return;
+      btn.addEventListener('click', () => {
+        const item = D().comingSoon[i];
+        if (item) openClinicalDetails(item.id);
+      });
+    });
     /* Initial sync: ensure card 0 is centered after first paint (gives the
        layout a tick to compute offsetLeft accounting for the clones). */
     requestAnimationFrame(() => setActive(0));

@@ -686,7 +686,11 @@ B6`,
   };
 
   // --- Coming-soon products ---------------------------------------------------
-  /* Final preorder copy from the client (2026-04-30). */
+  /* Final preorder copy from the client (2026-04-30).
+     Each entry carries its own `clinical` block — same shape as the live
+     products — so the Clinical Details drawer can render mechanism, strains,
+     and the ingredients/dosage/substantiation table verbatim from the
+     coming-soon-products.xlsx sheet the client supplied (2026-04-30). */
   const comingSoon = [
     {
       id: 'menopause-probiotic',
@@ -695,6 +699,37 @@ B6`,
         'Strain-specific probiotic for the menopausal microbiome shift. Targets estrobolome and vaginal atrophy. Not another supplement - microbiome-first.',
       tags: ['Floradapt/KABP', 'ME-3', 'DR7 candidates'],
       bg: '#F6DDE2',
+      preorder: true,
+      clinical: {
+        sections: [
+          {
+            label: 'Mechanism action',
+            body:
+              'The Floradapt® core blend supports normal estrogen metabolism and recirculation via the gut-estrogen axis, while companion strains broaden microbiome support across GI resilience, oxidative balance, gut-vaginal ecology, and immune modulation. PreforPro® bacteriophage prebiotic selectively clears harmful bacteria to optimize the microbiome environment.',
+          },
+          {
+            label: 'Strains',
+            body:
+              'Limosilactobacillus fermentum ME-3 · Floradapt® Menopause Blend (L. brevis KABP-052, L. plantarum KABP-051, P. acidilactici KABP-021) · Saccharomyces boulardii CNCM I-745 · L. plantarum DR7 · L. acidophilus La-14 · L. rhamnosus HN001 · B. animalis subsp. lactis HN019 · L. crispatus CCFM1110 + PreforPro® bacteriophage blend',
+          },
+        ],
+        ingredients: {
+          items: [
+            'Limosilactobacillus fermentum ME-3 (DSM 14241)',
+            'Floradapt® Menopause blend (Levilactobacillus brevis KABP-052, Lactiplantibacillus plantarum KABP-051, Pediococcus acidilactici KABP-021)',
+            'Saccharomyces boulardii CNCM I-745',
+            'Lactiplantibacillus plantarum DR7',
+            'Lactobacillus acidophilus La-14',
+            'Lacticaseibacillus rhamnosus HN001',
+            'Bifidobacterium animalis subsp. lactis HN019',
+            'Lactobacillus crispatus CCFM1110',
+            'PreforPro® bacteriophage blend (LH01, T4D, LL12 \u2013 Myoviridae; LL5 \u2013 Siphoviridae)',
+          ],
+          dosage: '2 capsules daily with food, 30 servings per container, shelf-stable',
+          substantiation:
+            'Floradapt® 3-strain blend studied in a 12-week RCT in healthy peri- and postmenopausal women - associated with higher circulating estrone and estradiol vs. placebo. Full HCP evidence dossier available on request.',
+        },
+      },
     },
     {
       id: 'prenatal-probiotic',
@@ -703,6 +738,39 @@ B6`,
         'Multi-strain prenatal probiotic for gut, vaginal, and maternal well-being. Supports healthy vaginal pH, digestive comfort, and immune resilience throughout pregnancy. Microbiome-first prenatal support.',
       tags: ['HN001', 'BB536', 'CCFM1110'],
       bg: '#F6DDE2',
+      preorder: true,
+      clinical: {
+        sections: [
+          {
+            label: 'Mechanism action',
+            body:
+              'Oral lactobacilli support gut-to-vaginal microbiome relevance, maintaining acidic vaginal pH and Lactobacillus dominance throughout pregnancy. Multi-species and interkingdom strains add bowel function, immune signaling, and gut-X axes support, while PreforPro® bacteriophage blend selectively shapes the microbiome through targeted pathogen clearing.',
+          },
+          {
+            label: 'Strains',
+            body:
+              'Bifidobacterium longum subsp. longum BB536 · Saccharomyces boulardii CNCM I-745 · L. plantarum DR7 · L. gasseri HLG13 · L. acidophilus LA-14 · B. animalis subsp. lactis Bi-07 · L. rhamnosus HN001 · B. subtilis DE111 · L. crispatus CCFM1110 · L. reuteri HR7 + PreforPro® bacteriophage blend',
+          },
+        ],
+        ingredients: {
+          items: [
+            'Bifidobacterium longum subsp. longum BB536',
+            'Saccharomyces boulardii CNCM I-745',
+            'Lactiplantibacillus plantarum DR7',
+            'Lactobacillus gasseri HLG13',
+            'Lactobacillus acidophilus LA-14',
+            'Bifidobacterium animalis subsp. lactis Bi-07',
+            'Lacticaseibacillus rhamnosus HN001',
+            'Bacillus subtilis DE111',
+            'Lactobacillus crispatus CCFM1110',
+            'Limosilactobacillus reuteri HR7',
+            'PreforPro® bacteriophage blend (LH01, T4D, LL12 \u2013 Myoviridae; LL5 \u2013 Siphoviridae)',
+          ],
+          dosage: '2 capsules daily with food, 30 servings per container, shelf-stable',
+          substantiation:
+            'L. rhamnosus HN001 studied in pregnancy RCTs supporting maternal glucose, postpartum mood, and vaginal outcomes. L. acidophilus LA-14 + B. lactis Bi-07 found in late-pregnancy multistrain oral studies supporting digestive comfort. Full HCP evidence dossier available on request.',
+        },
+      },
     },
     {
       id: 'prenatal-seeding-booster',
@@ -711,6 +779,34 @@ B6`,
         'Maternal probiotic + HMO formulation for late pregnancy and early postpartum. Targets the colonization window to support early-life microbial exposure and infant microbiome development.',
       tags: ['LGG', 'B. infantis ISTILOS\u2122', "2'-FL HMO"],
       bg: '#F6DDE2',
+      preorder: true,
+      clinical: {
+        sections: [
+          {
+            label: 'Mechanism action',
+            body:
+              "2'-Fucosyllactose (2'-FL HMO) pairs synbiotically with B. infantis ISTILOS\u2122 \u2014 a strain specialized for HMO utilization \u2014 to produce acetate, lactate, and short-chain fatty acids supporting infant gut ecosystem development. Maternal supplementation during the late third trimester supports early-life microbial exposure during the critical colonization window, with strain-specific transfer detectable in infant stool.",
+          },
+          {
+            label: 'Strains',
+            body:
+              "Lacticaseibacillus rhamnosus GG · L. acidophilus LA-5® · B. animalis subsp. lactis BB-12® · B. longum subsp. infantis Bifin02 (ISTILOS\u2122) + Prebiotic: 2'-Fucosyllactose (2'-FL HMO) 1000mg",
+          },
+        ],
+        ingredients: {
+          items: [
+            'Lacticaseibacillus rhamnosus GG (10B CFU)',
+            'Lactobacillus acidophilus LA-5® (2B CFU)',
+            'Bifidobacterium animalis subsp. lactis BB-12® (2B CFU)',
+            'Bifidobacterium longum subsp. infantis Bifin02 ISTILOS\u2122 (0.1B CFU)',
+            "2'-Fucosyllactose (2'-FL HMO) 1000mg",
+          ],
+          dosage:
+            '1 sachet daily, 30 servings per container, 14.1B CFU guaranteed at end of shelf life, shelf-stable',
+          substantiation:
+            'B. infantis ISTILOS\u2122 detected in ~20\u201330% of infants in maternal seeding studies. L. rhamnosus GG detectable early in some studies. Strains have demonstrated favorable safety profiles in pregnancy RCTs. Designed for initiation in third trimester through at least 4 weeks postpartum. Full HCP evidence dossier available on request.',
+        },
+      },
     },
   ];
 
