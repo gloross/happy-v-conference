@@ -1,0 +1,14 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Base droplet -->
+  <path d="M32 6C32 6 14 28 14 40C14 50.4934 22.5066 59 33 59C43.4934 59 52 50.4934 52 40C52 28 32 6 32 6Z" fill="#E6F0FA"></path>
+
+  <!-- Inner softness highlight -->
+  <path d="M32 12C32 12 20 30 20 40C20 47.732 25.268 53 33 53C40.732 53 46 47.732 46 40C46 30 32 12 32 12Z" fill="#CFE3F5"></path>
+
+  <!-- Dryness cracks -->
+  <path d="M28 34L32 40L30 46" stroke="#7FA6C9" stroke-width="2" stroke-linecap="round"></path>
+  <path d="M36 32L34 38L38 44" stroke="#7FA6C9" stroke-width="2" stroke-linecap="round"></path>
+
+  <!-- Small evaporation accent -->
+  <path d="M22 20C22 20 24 18 26 20" stroke="#AFCBE3" stroke-width="2" stroke-linecap="round"></path>
+</svg>

@@ -301,7 +301,7 @@ B6`,
     {id: 'bv', label: 'Recurrent BV / Vaginal Imbalance', icon: single('condition-bv.svg')},
     {id: 'uti', label: 'UTI Prevention', icon: single('condition-uti.svg')},
     {id: 'menopause', label: 'Menopause', icon: single('condition-menopause.svg')},
-    {id: 'perimenopause', label: 'Perimenopause Symptoms', icon: single('condition-menopause.svg')},
+    {id: 'perimenopause', label: 'Perimenopause Symptoms', icon: single('perimenopause.svg')},
     /* Cycle Irregularity / PMS — Layer_1 in Figma (12 strokes from cycle-1..11) */
     {
       id: 'cycle',
@@ -325,23 +325,17 @@ B6`,
     {
       id: 'bloating',
       label: 'Bloating / Digestive Discomfort',
-      icon: stack([
-        {f: 'gi-1.svg', inset: '35.31% 6.32% 0 81.07%'},
-        {f: 'gi-2.svg', inset: '0 12.24% 68.21% 78.12%'},
-        {f: 'gi-3.svg', inset: '45.77% 48.54% 48.53% 48.54%'},
-        {f: 'gi-4.svg', inset: '41.56% 81.07% 0 6.31%'},
-        {f: 'gi-5.svg', inset: '0 78.12% 61.93% 12.23%'},
-        {f: 'gi-6.svg', inset: '72.76% 11.05% 0 23.7%'},
-        {f: 'gi-7.svg', inset: '72.76% 79.16% 20.02% 11.05%'},
-        {f: 'gi-8.svg', inset: '62.11% 16% 20.58% 16%'},
-        {f: 'gi-9.svg', inset: '25.23% 18.42% 15.59% 6.03%', wrap: 'transform: rotate(-67.13deg);'},
-      ]),
+      icon: single('condition-bloating.svg'),
     },
     /* Vaginal odor (treat as Body Odor in our data) — fish illustration */
-    {id: 'odor', label: 'Body Odor Concerns', icon: single('condition-uti.svg') /* TODO: wire vaginal odor stack */},
+    {
+      id: 'odor',
+      label: 'Body Odor Concerns',
+      icon: single('condition-body-odor.svg') /* TODO: wire vaginal odor stack */,
+    },
     /* Conditions not present in Figma chip frame — clean line approximations */
-    {id: 'dryness', label: 'Vaginal Dryness', icon: single('condition-menopause.svg')},
-    {id: 'postmeno', label: 'Post-menopause Maintenance', icon: single('condition-menopause.svg')},
+    {id: 'dryness', label: 'Vaginal Dryness', icon: single('condition-dryness.svg')},
+    {id: 'postmeno', label: 'Post-menopause Maintenance', icon: single('condition-pm.svg')},
     {id: 'prenatal', label: 'Prenatal Gut Health', icon: single('condition-bv.svg')},
   ];
 
@@ -692,32 +686,30 @@ B6`,
   };
 
   // --- Coming-soon products ---------------------------------------------------
-  /* Only the Menopause Probiotic entry is from Figma. The other two slots are
-     intentionally identical placeholders — the client will replace name,
-     tagline, tags, and bg color when they have the real upcoming products. */
+  /* Final preorder copy from the client (2026-04-30). */
   const comingSoon = [
     {
       id: 'menopause-probiotic',
       name: 'Menopause Probiotic',
       tagline:
-        'Strain-specific probiotic for the menopausal microbiome shift. Targets estrobolome and vaginal atrophy. Not another supplement — microbiome-first.',
+        'Strain-specific probiotic for the menopausal microbiome shift. Targets estrobolome and vaginal atrophy. Not another supplement - microbiome-first.',
       tags: ['Floradapt/KABP', 'ME-3', 'DR7 candidates'],
       bg: '#F6DDE2',
     },
     {
-      id: 'placeholder-2',
-      name: 'Menopause Probiotic',
+      id: 'prenatal-probiotic',
+      name: 'Prenatal Probiotic',
       tagline:
-        'Strain-specific probiotic for the menopausal microbiome shift. Targets estrobolome and vaginal atrophy. Not another supplement — microbiome-first.',
-      tags: ['Floradapt/KABP', 'ME-3', 'DR7 candidates'],
+        'Multi-strain prenatal probiotic for gut, vaginal, and maternal well-being. Supports healthy vaginal pH, digestive comfort, and immune resilience throughout pregnancy. Microbiome-first prenatal support.',
+      tags: ['HN001', 'BB536', 'CCFM1110'],
       bg: '#F6DDE2',
     },
     {
-      id: 'placeholder-3',
-      name: 'Menopause Probiotic',
+      id: 'prenatal-seeding-booster',
+      name: 'Prenatal Seeding Booster',
       tagline:
-        'Strain-specific probiotic for the menopausal microbiome shift. Targets estrobolome and vaginal atrophy. Not another supplement — microbiome-first.',
-      tags: ['Floradapt/KABP', 'ME-3', 'DR7 candidates'],
+        'Maternal probiotic + HMO formulation for late pregnancy and early postpartum. Targets the colonization window to support early-life microbial exposure and infant microbiome development.',
+      tags: ['LGG', 'B. infantis ISTILOS\u2122', "2'-FL HMO"],
       bg: '#F6DDE2',
     },
   ];

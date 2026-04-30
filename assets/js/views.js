@@ -121,7 +121,7 @@
       <div class="about-grid">
         <div class="about-left">
           <div class="about-photo">
-            <img src="assets/img/about-team.png" alt="Happy V founders and team" />
+            <img src="assets/img/about-team.jpg" alt="Happy V founders and team" />
           </div>
           <div class="about-stats">
             <div class="about-stat">
@@ -654,15 +654,14 @@
     setActive(0);
   }
 
-  /* Clinical Details overlay (Figma 157:4445): right-side drawer.
-     Per-product accordion sections from p.clinical.sections, then an
-     "Ingredients" accordion containing a 3-col table (Ingredients / Dosage /
-     Substantiation), then an "Add to sample box" CTA at the bottom. Sample box
-     is persisted on `state.sampleBox` and surfaced on the sample form. */
   function openClinicalDetails(productId) {
     const p = D().products[productId];
     if (!p) return;
-    const tags = ['Strain-level transparency', 'No proprietary blends', 'Therapeutic CFU dosing'];
+    /* Per client (2026-04-30): only Pre + Pro shows the full transparency
+       trio. Every other product just shows "No proprietary blends". */
+    const tags = productId === 'prepro'
+      ? ['Strain-level transparency', 'No proprietary blends', 'Therapeutic CFU dosing']
+      : ['No proprietary blends'];
     const clinical = p.clinical || {sections: [], ingredients: null};
     const ing = clinical.ingredients;
     const sections = [...clinical.sections];
