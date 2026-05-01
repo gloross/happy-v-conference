@@ -1175,25 +1175,43 @@
     const pillHost = root.querySelector('#cmpPills');
     let selected = new Set(); // Empty = "All competitors"
 
-    const renderList = () => {
+    /* Group competitors by brand (everything before the first em-dash/hyphen)
+       so the dropdown and pills show one entry per brand even when the matrix
+       has multiple products from the same brand (e.g. two Estroven SKUs).
+       Toggling a brand chip adds/removes ALL of that brand's products from
+       the selected set. */
+    const brandOf = (name) => name.split(/[—\-]/)[0].trim();
+    const brandGroups = () => {
       const m = D().competitorMatrix[sel.value];
-      list.innerHTML = m.competitors
-        .map((name) => {
-          const checked = selected.has(name);
+      const map = new Map();
+      m.competitors.forEach((name) => {
+        const b = brandOf(name);
+        if (!map.has(b)) map.set(b, []);
+        map.get(b).push(name);
+      });
+      return map;
+    };
+
+    const renderList = () => {
+      const groups = brandGroups();
+      list.innerHTML = [...groups.entries()]
+        .map(([brand, names]) => {
+          const allChecked = names.every((n) => selected.has(n));
           return `<li class="cmp-multi__item">
           <label>
-            <span class="cmp-cb${checked ? ' cmp-cb--on' : ''}" aria-hidden="true"></span>
-            <input type="checkbox" data-cmp-name="${escape(name)}" ${checked ? 'checked' : ''} />
-            <span>${escape(name.split(/[—\-]/)[0].trim())}</span>
+            <span class="cmp-cb${allChecked ? ' cmp-cb--on' : ''}" aria-hidden="true"></span>
+            <input type="checkbox" data-cmp-brand="${escape(brand)}" ${allChecked ? 'checked' : ''} />
+            <span>${escape(brand)}</span>
           </label>
         </li>`;
         })
         .join('');
-      list.querySelectorAll('input[data-cmp-name]').forEach((cb) => {
+      list.querySelectorAll('input[data-cmp-brand]').forEach((cb) => {
         cb.addEventListener('change', () => {
-          const name = cb.dataset.cmpName;
-          if (cb.checked) selected.add(name);
-          else selected.delete(name);
+          const brand = cb.dataset.cmpBrand;
+          const names = brandGroups().get(brand) || [];
+          if (cb.checked) names.forEach((n) => selected.add(n));
+          else names.forEach((n) => selected.delete(n));
           syncAll();
         });
       });
@@ -1206,17 +1224,22 @@
         return;
       }
       pillHost.hidden = false;
-      const arr = Array.from(selected);
+      /* Dedupe selected names down to brands so multi-product brands show as
+         one removable pill that clears every product under that brand. */
+      const brands = [...new Set([...selected].map(brandOf))];
       pillHost.innerHTML =
-        arr
+        brands
           .map(
-            (name) =>
-              `<span class="cmp-pill"><span>${escape(name.split(/[—\-]/)[0].trim())}</span><button class="cmp-pill__x" data-cmp-rm="${escape(name)}" aria-label="Remove">×</button></span>`,
+            (b) =>
+              `<span class="cmp-pill"><span>${escape(b)}</span><button class="cmp-pill__x" data-cmp-rm-brand="${escape(b)}" aria-label="Remove">×</button></span>`,
           )
           .join('') + `<button class="cmp-pills__clear" id="cmpClear" type="button">Clear All</button>`;
-      pillHost.querySelectorAll('[data-cmp-rm]').forEach((b) =>
-        b.addEventListener('click', () => {
-          selected.delete(b.dataset.cmpRm);
+      pillHost.querySelectorAll('[data-cmp-rm-brand]').forEach((btn) =>
+        btn.addEventListener('click', () => {
+          const brand = btn.dataset.cmpRmBrand;
+          [...selected].forEach((n) => {
+            if (brandOf(n) === brand) selected.delete(n);
+          });
           syncAll();
         }),
       );
@@ -1231,7 +1254,9 @@
     };
 
     const renderTrigger = () => {
-      label.textContent = selected.size === 0 ? 'All competitors' : `${selected.size} Selected`;
+      /* Count by brand so two SKUs of the same brand read as "1 Selected", not "2". */
+      const brandCount = new Set([...selected].map(brandOf)).size;
+      label.textContent = brandCount === 0 ? 'All competitors' : `${brandCount} Selected`;
     };
 
     const syncAll = () => {
