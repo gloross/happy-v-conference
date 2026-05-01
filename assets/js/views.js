@@ -542,10 +542,16 @@
       ? `<div class="rec-pager">${r.pages.map((_, i) => `<button class="rec-dot${i === 0 ? ' rec-dot--on' : ''}" data-rec-dot="${i}" aria-label="Go to slide ${i + 1}"></button>`).join('')}</div>`
       : '';
 
+    /* Title flips based on entry path: "for your patient" reads as a quiz
+       follow-up, so it only fits when conditions or stages were actually
+       selected. Direct nav (Products tab without taking the quiz, or Skip)
+       gets the neutral "Recommended from us". */
+    const tookQuiz = conds.length > 0 || stages.length > 0;
+    const title = tookQuiz ? 'Recommended for your patient' : 'Recommended from us';
     return /* html */ `
     <section class="view-enter rec-view${multi ? '' : ' rec-view--single'}">
       <div class="rec-head">
-        <h1 class="rec-head__title">Recommended for your patient</h1>
+        <h1 class="rec-head__title">${escape(title)}</h1>
         ${multi ? `<p class="rec-head__sub">Swipe to next condition</p>` : ''}
       </div>
 
@@ -642,6 +648,9 @@
         });
         if (visibleIdx >= 0 && visibleIdx !== current) {
           current = visibleIdx;
+          /* Mirror what setActive does — flip the active class on the page
+             so the highlighted card visually tracks the swipe gesture. */
+          pages.forEach((p, idx) => p.classList.toggle('rec-page--active', idx === current));
           dots.forEach((d, idx) => d.classList.toggle('rec-dot--on', idx === current));
           const prev = root.querySelector('#recArrowPrev');
           const next = root.querySelector('#recArrowNext');
@@ -1354,6 +1363,7 @@
     const cards = Array.from(root.querySelectorAll('.cs-card:not(.cs-card--clone)'));
     const dots = Array.from(root.querySelectorAll('.cs-dot'));
     let idx = 0;
+    let scrollLock = false;
     const setActive = (n) => {
       /* Cyclic: wrap on either end. Both arrows are always enabled. */
       idx = ((n % cards.length) + cards.length) % cards.length;
@@ -1362,12 +1372,44 @@
       const card = cards[idx];
       if (card && carousel) {
         const left = card.offsetLeft - (carousel.clientWidth - card.offsetWidth) / 2;
+        scrollLock = true;
         carousel.scrollLeft = left;
+        setTimeout(() => {
+          scrollLock = false;
+        }, 200);
       }
     };
     dots.forEach((d, i) => d.addEventListener('click', () => setActive(i)));
     root.querySelector('#csArrowPrev')?.addEventListener('click', () => setActive(idx - 1));
     root.querySelector('#csArrowNext')?.addEventListener('click', () => setActive(idx + 1));
+    /* Sync active state when user swipes/scrolls manually. We pick the card
+       whose center is closest to the carousel's viewport center — works
+       even mid-snap because we wait for the scroll to settle. */
+    let csScrollTimer;
+    carousel?.addEventListener('scroll', () => {
+      if (scrollLock) return;
+      clearTimeout(csScrollTimer);
+      csScrollTimer = setTimeout(() => {
+        const cr = carousel.getBoundingClientRect();
+        const center = cr.left + cr.width / 2;
+        let nearestIdx = idx;
+        let nearestDist = Infinity;
+        cards.forEach((c, i) => {
+          const r = c.getBoundingClientRect();
+          const cardCenter = r.left + r.width / 2;
+          const dist = Math.abs(cardCenter - center);
+          if (dist < nearestDist) {
+            nearestDist = dist;
+            nearestIdx = i;
+          }
+        });
+        if (nearestIdx !== idx) {
+          idx = nearestIdx;
+          cards.forEach((c, i) => c.classList.toggle('cs-card--active', i === idx));
+          dots.forEach((d, i) => d.classList.toggle('cs-dot--on', i === idx));
+        }
+      }, 80);
+    });
     /* Wire the per-card "Clinical Details" button to the same drawer the live
        products use. We look up the product by its slide index so we don't have
        to plumb IDs through the DOM. */
@@ -1595,10 +1637,7 @@
       <div class="ty-content">
         <h1 class="ty-title">Your sample kit is on its way</h1>
         <p class="ty-body">
-          Here's what happens next — so your inbox is ready. You'll receive clinical resources for
-          ${conds.map((c) => `<span class="ty-tag">${escape(c)}</span>`).join(' ')}
-          ${stages.map((s) => `<span class="ty-tag ty-tag--alt">${escape(s)}</span>`).join(' ')}
-          <strong>within 48 hours.</strong>
+          Here's what happens next: so your inbox is ready.
         </p>
         <a href="#/home" class="btn-primary ty-cta">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
