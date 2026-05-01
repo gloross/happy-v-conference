@@ -1636,9 +1636,6 @@
       </div>
       <div class="ty-content">
         <h1 class="ty-title">Your sample kit is on its way</h1>
-        <p class="ty-body">
-          Here's what happens next: so your inbox is ready.
-        </p>
         <a href="#/home" class="btn-primary ty-cta">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           Back to start

@@ -533,11 +533,18 @@ h2,
   width: 100%;
   max-width: 1270px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* minmax(0, 1fr) prevents long chip text (e.g. "Recurrent BV / Vaginal
+     Imbalance") from forcing a column wider than its 1fr share, which would
+     overflow the viewport on narrower screens. */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
 .chip-grid--3 {
-  grid-template-columns: repeat(3, 1fr);
+  /* auto-fit lets the life-stage row reflow to fewer columns when the
+     viewport gets narrow (e.g. iPad portrait, smaller laptops) instead of
+     bleeding past the right edge. The min(100%, 260px) min keeps a sensible
+     floor on wider viewports while still allowing single-column on phones. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 .chip-grid__row-center {
   grid-column: 1 / -1;
@@ -607,7 +614,10 @@ h2,
   height: 56px;
 }
 .chip__label {
-  white-space: nowrap;
+  /* Allow long labels (e.g. "Reproductive / perimenopause (35-45)") to wrap
+     in narrower 3-col layouts instead of being clipped by the chip's edge.
+     The 2-col chips are wide enough that short labels still stay on one line. */
+  white-space: normal;
 }
 .chip__range {
   color: var(--navy-550);
@@ -2488,6 +2498,12 @@ h2,
  * Mobile (≤640px):  smaller type, full-width chips, condensed nav.
  * =================================================================== */
 
+@media (max-width: 1199px) {
+  .chip-grid--3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 /* ----- Tablet (≤1024px) ----- */
 @media (max-width: 1024px) {
   /* Universal: tighten side padding across all view containers */
@@ -2579,9 +2595,6 @@ h2,
     font-size: 18px;
     line-height: 24px;
     min-height: 80px;
-  }
-  .chip-grid--3 {
-    grid-template-columns: repeat(2, 1fr);
   }
 
   /* Recommendation: stack primary + secondary */
