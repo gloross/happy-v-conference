@@ -552,7 +552,7 @@
     <section class="view-enter rec-view${multi ? '' : ' rec-view--single'}">
       <div class="rec-head">
         <h1 class="rec-head__title">${escape(title)}</h1>
-        ${multi ? `<p class="rec-head__sub">Swipe to next condition</p>` : ''}
+        ${multi && tookQuiz ? `<p class="rec-head__sub">Swipe to next condition</p>` : ''}
       </div>
 
       <div class="rec-swiper-wrap">
