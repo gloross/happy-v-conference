@@ -153,7 +153,7 @@
 
           <div class="about-body">
             <p class="about-para">
-              <strong>23+ years of manufacturing heritage</strong> — Founded under Nutrition Formulators, Inc.(NFI) in 1997, Happy V is manufactured in a cGMP-compliant
+              <strong>28 years of manufacturing heritage</strong>, Founded under Nutrition Formulators, Inc.(NFI) in 1997, Happy V is manufactured in a cGMP-compliant
               facility and is a proud member of the International Probiotics Association (IPA).
             </p>
             <p class="about-para">
@@ -165,8 +165,8 @@
               <p class="about-callout__title">Key Differentiator</p>
               <p class="about-callout__body">
                 <strong>No probiotic stuffing.</strong> Every strain is dosed at clinically studied
-                levels with full label transparency. We don't add strains just to pad the label —
-                if it's in the bottle, it's there at a therapeutic dose backed by research.
+                levels with full label transparency. We don't add strains just to pad the label.
+                If it's in the bottle, it's there at a therapeutic dose backed by research.
               </p>
             </div>
             <p class="about-para">
