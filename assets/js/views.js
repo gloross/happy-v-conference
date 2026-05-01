@@ -658,16 +658,15 @@
     /* Look up across both live products (sold today) and coming-soon products
        (preorder). Both share the `clinical` shape so the drawer renders the
        same way; only the "Add to sample box" CTA and the rating row differ. */
-    const p =
-      D().products[productId] ||
-      (D().comingSoon || []).find((c) => c.id === productId);
+    const p = D().products[productId] || (D().comingSoon || []).find((c) => c.id === productId);
     if (!p) return;
     const isPreorder = !!p.preorder;
     /* Per client (2026-04-30): only Pre + Pro shows the full transparency
        trio. Every other product just shows "No proprietary blends". */
-    const tags = productId === 'prepro'
-      ? ['Strain-level transparency', 'No proprietary blends', 'Therapeutic CFU dosing']
-      : ['No proprietary blends'];
+    const tags =
+      productId === 'prepro'
+        ? ['Strain-level transparency', 'No proprietary blends', 'Therapeutic CFU dosing']
+        : ['No proprietary blends'];
     const clinical = p.clinical || {sections: [], ingredients: null};
     const ing = clinical.ingredients;
     const sections = [...clinical.sections];
@@ -710,17 +709,21 @@
       <aside class="cd-drawer" role="dialog" aria-modal="true" aria-labelledby="cdTitle">
         <div class="cd-content">
           <div class="cd-image${isPreorder ? ' cd-image--preorder' : ''}" style="background:${escape(p.bgGradient || p.bg || '#A6CDEC')};">
-            ${isPreorder
-              ? `<span class="cs-card__pill">Coming soon...</span>`
-              : (p.img
+            ${
+              isPreorder
+                ? `<span class="cs-card__pill">Coming soon...</span>`
+                : p.img
                   ? `<img src="${escape(p.img)}" alt="" onerror="this.style.display='none';"/>`
-                  : `<span class="cd-image__label">${escape(p.shortName || '')}</span>`)}
+                  : `<span class="cd-image__label">${escape(p.shortName || '')}</span>`
+            }
           </div>
           <div class="cd-meta">
             <h2 id="cdTitle" class="cd-title">${escape(p.name)}</h2>
-            ${p.reviews
-              ? `<div class="cd-rating">${stars}<span class="cd-rcount">(${p.reviews.toLocaleString()})</span></div>`
-              : ''}
+            ${
+              p.reviews
+                ? `<div class="cd-rating">${stars}<span class="cd-rcount">(${p.reviews.toLocaleString()})</span></div>`
+                : ''
+            }
           </div>
           <div class="cd-tags">
             ${tags.map((t) => `<span class="cd-tag">${escape(t)}</span>`).join('')}
@@ -743,16 +746,18 @@
               )
               .join('')}
           </div>
-          ${isPreorder
-            ? ''
-            : `<div class="cd-cta">
+          ${
+            isPreorder
+              ? ''
+              : `<div class="cd-cta">
             <button class="btn-primary cd-add" type="button" data-cd-add aria-pressed="${inBox}">
               <span class="cd-add__label">${inBox ? 'Added to sample box' : 'Add to sample box'}</span>
               <svg class="cd-add__check" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </button>
-          </div>`}
+          </div>`
+          }
         </div>
       </aside>`;
     document.body.appendChild(overlay);
@@ -819,7 +824,7 @@
             <svg class="cmp-multi__chev" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#25425D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <div class="cmp-multi__panel" id="cmpMultiPanel" hidden>
-            <p class="cmp-multi__hint">Select up to 4:</p>
+            <p class="cmp-multi__hint">Select competitors to compare:</p>
             <ul class="cmp-multi__list" id="cmpMultiList"></ul>
           </div>
         </div>
@@ -931,26 +936,58 @@
       img: 'assets/img/products/double-wood-chlorophyll.png',
       short: 'Liquid Chlorophyll',
     },
-    /* Menopause competitors */
-    'Estroven — Multi-Symptom Relief': {
+    /* Menopause competitors (per competitors.xlsx 2026-05-01).
+       Image/logo file paths are pre-wired to expected filenames; they fall
+       back to a styled text label if the file isn't present yet. */
+    'Estroven — Complete Menopause Relief': {
       brand: 'ESTROVEN',
       logo: 'assets/img/brands/estroven.png',
-      img: 'assets/img/products/estroven-multi-symptom.jpeg',
-      short: 'Multi-Symptom Menopause Relief',
+      img: 'assets/img/products/estroven-complete-menopause-relief.webp',
+      short: 'Complete Menopause Relief',
     },
-    'Relizen — Hot Flash & Night Sweat': {
-      brand: 'RELIZEN',
-      logo: 'assets/img/brands/relizen.png',
-      img: 'assets/img/products/relizen-hot-flash.png',
-      short: 'Hot Flash & Night Sweat Relief',
+    'Estroven — Complete + Ashwagandha': {
+      brand: 'ESTROVEN',
+      logo: 'assets/img/brands/estroven.png',
+      img: 'assets/img/products/estroven-complete-ashwagandha.webp',
+      short: 'Complete + Ashwagandha',
     },
-    Remifemin: {
-      brand: 'REMIFEMIN',
-      logo: 'assets/img/brands/remifemin.svg',
-      img: 'assets/img/products/remifemin.jpg',
-      short: 'Remifemin',
+    'Bonafide — Relizen': {
+      brand: 'BONAFIDE',
+      logo: 'assets/img/brands/bonafide.svg',
+      img: 'assets/img/products/bonafide-relizen.jpg',
+      short: 'Relizen',
     },
-    /* Ovarian competitors */
+    'Amberen — Menopause Relief': {
+      brand: 'AMBEREN',
+      logo: 'assets/img/brands/amberen.png',
+      img: 'assets/img/products/amberen-menopause-relief.jpg',
+      short: 'Menopause Relief',
+    },
+    "New Chapter — Every Woman's One Daily 40+": {
+      brand: 'NEW CHAPTER',
+      logo: 'assets/img/brands/new-chapter.jpg',
+      img: 'assets/img/products/new-chapter-every-woman-40.webp',
+      short: "Every Woman's One Daily 40+",
+    },
+    'Thorne — Meta-Balance': {
+      brand: 'THORNE',
+      logo: 'assets/img/brands/thorne.svg',
+      img: 'assets/img/products/thorne-meta-balance.jpg',
+      short: 'Meta-Balance',
+    },
+    'Metagenics — Estrovera': {
+      brand: 'METAGENICS',
+      logo: 'assets/img/brands/metagenics.svg',
+      img: 'assets/img/products/metagenics-estrovera.jpg',
+      short: 'Estrovera',
+    },
+    'Perelel — Peri Support Pack': {
+      brand: 'PERELEL',
+      logo: 'assets/img/brands/perelel.png',
+      img: 'assets/img/products/perelel-peri-support-pack.webp',
+      short: 'Peri Support Pack',
+    },
+    /* Ovarian competitors (per competitors.xlsx 2026-05-01) */
     'O Positiv — FLO Ovarian Support': {
       brand: 'O POSITIV',
       logo: 'assets/img/brands/o-positiv.svg',
@@ -963,11 +1000,84 @@
       img: 'assets/img/products/theralogix-ovasitol.webp',
       short: 'Ovasitol',
     },
+    'Thorne — Ovary Good': {
+      brand: 'THORNE',
+      logo: 'assets/img/brands/thorne.svg',
+      img: 'assets/img/products/ovary-good.jpg',
+      short: 'Ovary Good',
+    },
+    'Fullwell — Inositol Stick Pack': {
+      brand: 'FULLWELL',
+      logo: 'assets/img/brands/fullwell.png',
+      img: 'assets/img/products/fullwell-inositol-stick-pack.png',
+      short: 'Inositol Stick Pack',
+    },
+    'Arrae — IN401\u2122 Inositol': {
+      brand: 'ARRAE',
+      logo: 'assets/img/brands/arrae.png',
+      img: 'assets/img/products/arrae-in401-inositol.webp',
+      short: 'IN401\u2122 Inositol',
+    },
+    'Pure Encapsulations — Inositol (Caronositol-Fertility\u2122)': {
+      brand: 'PURE ENCAPSULATIONS',
+      logo: 'assets/img/brands/pure-encapsulations.svg',
+      img: 'assets/img/products/pure-encapsulations-inositol.jpg',
+      short: 'Inositol (Caronositol-Fertility\u2122)',
+    },
     'Wholesome Story - Myo & D-Chiro Inositol': {
       brand: 'WHOLESOME STORY',
       logo: 'assets/img/brands/wholesome-story.png',
       img: 'assets/img/products/wholesome-story-myo-d-chiro-inositol.webp',
       short: 'Myo & D-Chiro Inositol',
+    },
+    /* Pre + Pro competitors — second wave (per competitors.xlsx 2026-05-01) */
+    'Her Florastor — Balanced Benefits': {
+      brand: 'HER FLORASTOR',
+      logo: 'assets/img/brands/her-florastor.svg',
+      img: 'assets/img/products/her-florastor-balanced-benefits.webp',
+      short: 'Good Girl Probiotics',
+    },
+    'VagiBiom — Complete Feminine Balance': {
+      brand: 'VAGIBIOM',
+      logo: 'assets/img/brands/vagibiom.svg',
+      img: 'assets/img/products/vagibiom-feminine-support.webp',
+      short: 'Complete Feminine Balance',
+    },
+    "Māge — Women's Probiotic": {
+      brand: 'MĀGE',
+      logo: 'assets/img/brands/solvwellness.svg',
+      img: 'assets/img/products/mage-womens-probiotic.webp',
+      short: "Women's Probiotic",
+    },
+    'Bonafide — Clairvee': {
+      brand: 'BONAFIDE',
+      logo: 'assets/img/brands/bonafide.svg',
+      img: 'assets/img/products/bonafide-clairvee.webp',
+      short: 'Clairvee',
+    },
+    'AZO — Dual Protection': {
+      brand: 'AZO',
+      logo: 'assets/img/brands/azo.svg',
+      img: 'assets/img/products/azo-dual-protection.webp',
+      short: 'Dual Protection',
+    },
+    "Physician's Choice — Vaginal Probiotic": {
+      brand: "PHYSICIAN'S CHOICE",
+      logo: 'assets/img/brands/physicians-choice.png',
+      img: 'assets/img/products/physicians-choice-vaginal-probiotic.webp',
+      short: 'Vaginal Probiotic',
+    },
+    "Culturelle — Women's 4-in-1": {
+      brand: 'CULTURELLE',
+      logo: 'assets/img/brands/culturelle.svg',
+      img: 'assets/img/products/culturelle-womens-4-in-1.webp',
+      short: "Women's 4-in-1",
+    },
+    "Garden of Life — Dr. Formulated Women's": {
+      brand: 'GARDEN OF LIFE',
+      logo: 'assets/img/brands/garden-of-life.png',
+      img: 'assets/img/products/garden-of-life-dr-formulated-womens.webp',
+      short: "Dr. Formulated Women's",
     },
   };
   const HAPPY_V_BRAND = {brand: 'HAPPY V', logo: 'assets/img/brands/happy-v.png'};
@@ -1064,18 +1174,16 @@
     const label = root.querySelector('#cmpMultiLabel');
     const pillHost = root.querySelector('#cmpPills');
     let selected = new Set(); // Empty = "All competitors"
-    const MAX = 4;
 
     const renderList = () => {
       const m = D().competitorMatrix[sel.value];
       list.innerHTML = m.competitors
-        .map((name, i) => {
+        .map((name) => {
           const checked = selected.has(name);
-          const disabled = !checked && selected.size >= MAX;
-          return `<li class="cmp-multi__item${disabled ? ' cmp-multi__item--disabled' : ''}">
+          return `<li class="cmp-multi__item">
           <label>
             <span class="cmp-cb${checked ? ' cmp-cb--on' : ''}" aria-hidden="true"></span>
-            <input type="checkbox" data-cmp-name="${escape(name)}" ${checked ? 'checked' : ''} ${disabled ? 'disabled' : ''} />
+            <input type="checkbox" data-cmp-name="${escape(name)}" ${checked ? 'checked' : ''} />
             <span>${escape(name.split(/[—\-]/)[0].trim())}</span>
           </label>
         </li>`;

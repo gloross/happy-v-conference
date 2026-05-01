@@ -2036,6 +2036,11 @@ h2,
 
 .cmp-host {
   width: 100%;
+  /* Allow horizontal scroll on desktop too — when the user selects 5+ competitors
+     the grid would otherwise squash columns to fit. Now they keep a readable
+     min width and overflow gracefully. */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 /* Comparison table — uses CSS subgrid so every row auto-sizes to its tallest
    cell across all columns (row labels stay aligned with their data cells
@@ -2048,14 +2053,24 @@ h2,
      row 3..N+2: data rows (one per matrix row, aligned to row labels) */
 .cmp-table {
   display: grid;
-  grid-template-columns: 180px repeat(var(--cmp-cols, 3), 1fr);
+  /* Each product column is sized so exactly 4 of them (HV + 3 competitors)
+     fit in the host viewport alongside the row-label column. With ≤4 product
+     columns total, 1fr expands them to fill. With 5+, columns hold their
+     min and the host scrolls horizontally in 4-column chunks.
+     Math: (host width − label 180px − 5 gaps × 8px) / 4 visible. */
+  grid-template-columns:
+    180px
+    repeat(var(--cmp-cols, 3), minmax(calc((100% - 180px - (8px * 5)) / 4), 1fr));
   grid-template-rows: auto auto repeat(var(--cmp-rows, 6), auto);
   gap: 8px;
   align-items: stretch;
   background: var(--white);
   border-radius: var(--r-big);
   padding: 0;
-  overflow: hidden;
+  /* Span at least the host width so few-column tables fill the viewport.
+     No overflow:hidden here — that would prevent the grid from growing
+     beyond its parent and break the horizontal-scroll behavior. */
+  min-width: 100%;
 }
 .cmp-table__rowlabels {
   grid-column: 1;
