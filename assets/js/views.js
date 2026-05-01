@@ -48,7 +48,7 @@
               <span class="home-hero__stars" aria-hidden="true">
                 ${'<img src="assets/img/icons/star.svg" alt="" width="22" height="22" />'.repeat(5)}
               </span>
-              <span class="home-hero__rating-text">1,000,000 + Happy Customers</span>
+              <span class="home-hero__rating-text">25,000 Happy Customers</span>
             </div>
             <p class="home-hero__sub">Clinically dosed · Strain-specific · Peer-reviewed evidence</p>
           </div>
@@ -70,7 +70,7 @@
           </div>
           <div class="home-stats__divider" aria-hidden="true"></div>
           <div class="home-stat">
-            <p class="home-stat__num">1,000,000 +</p>
+            <p class="home-stat__num">1,000,000+</p>
             <p class="home-stat__label">Happy Customers</p>
           </div>
           <div class="home-stats__divider" aria-hidden="true"></div>
@@ -130,7 +130,7 @@
             </div>
             <div class="about-stats__divider" aria-hidden="true"></div>
             <div class="about-stat">
-              <p class="about-stat__num">1,000,000 +</p>
+              <p class="about-stat__num">1,000,000+</p>
               <p class="about-stat__label">Happy Customers</p>
             </div>
             <div class="about-stats__divider" aria-hidden="true"></div>
@@ -146,7 +146,7 @@
             <span class="home-hero__stars" aria-hidden="true">
               ${'<img src="assets/img/icons/star.svg" alt="" width="22" height="22" />'.repeat(5)}
             </span>
-            <span class="about-rating__text">1,000,000 + Happy Customers</span>
+            <span class="about-rating__text">25,000 Happy Customer Reviews</span>
           </div>
           <h1 class="about-heading">About Happy V</h1>
           <p class="about-subhead">Clinically dosed · Strain-specific · Peer-reviewed evidence</p>
