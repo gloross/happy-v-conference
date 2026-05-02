@@ -281,8 +281,12 @@ B6`,
      container with absolutely-positioned <img>s using Figma's inset percentages.
      Sub-SVGs were exported from the Figma desktop MCP server. */
   const ICONBASE = 'assets/img/icons/';
+  /* width/height: 100% so the stack scales to whatever .chip__icon container
+     is sized to (56px desktop, 40px mobile). Hard-coding 56px previously
+     overflowed the smaller mobile chip slot and made these icons look stretched
+     compared to the single-image chips. */
   const stack = (parts) =>
-    `<span class="iconstack" style="position:relative;display:block;width:56px;height:56px;overflow:hidden;">` +
+    `<span class="iconstack" style="position:relative;display:block;width:100%;height:100%;overflow:hidden;">` +
     parts
       .map(
         (p) =>

@@ -58,7 +58,7 @@
     };
   </script>
 
-  <link rel="stylesheet" href="assets/css/site.css?v=20" />
+  <link rel="stylesheet" href="assets/css/site.css?v=28" />
 </head>
 <body class="font-sans bg-white text-navy antialiased min-h-screen flex flex-col">
 
@@ -89,23 +89,67 @@
   <!-- App view -->
   <main id="app" class="flex-1 w-full"></main>
 
-  <!-- Bottom nav (hidden until quiz done) -->
+  <!-- Bottom nav (hidden until quiz done).
+       Icons are inlined as SVG so they always render — relying on
+       background mask-image dropped them in some browsers. -->
   <nav id="bottomnav" class="hidden fixed bottom-0 inset-x-0 bg-white border-t border-navy-200 z-20">
     <div class="max-w-[1366px] mx-auto px-3 py-3 grid grid-cols-5 gap-2">
-      <a href="#/home"           data-route="home"           class="navlink"><span class="navicon" aria-hidden="true"></span><span class="navlabel">Home</span></a>
-      <a href="#/recommendation" data-route="recommendation" class="navlink"><span class="navicon" aria-hidden="true"></span><span class="navlabel">Products</span></a>
-      <a href="#/comparison"     data-route="comparison"     class="navlink"><span class="navicon" aria-hidden="true"></span><span class="navlabel">Compare</span></a>
-      <a href="#/coming-soon"    data-route="coming-soon"    class="navlink"><span class="navicon" aria-hidden="true"></span><span class="navlabel">Coming Soon</span></a>
-      <a href="#/sample-form"    data-route="sample-form"    class="navlink"><span class="navicon" aria-hidden="true"></span><span class="navlabel">Get Samples</span></a>
+      <a href="#/home" data-route="home" class="navlink">
+        <svg class="navicon" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 21V13C15 12.7348 14.8946 12.4804 14.7071 12.2929C14.5196 12.1054 14.2652 12 14 12H10C9.73478 12 9.48043 12.1054 9.29289 12.2929C9.10536 12.4804 9 12.7348 9 13V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3 10C2.99993 9.70907 3.06333 9.42162 3.18579 9.15772C3.30824 8.89381 3.4868 8.6598 3.709 8.472L10.709 2.473C11.07 2.16791 11.5274 2.00052 12 2.00052C12.4726 2.00052 12.93 2.16791 13.291 2.473L20.291 8.472C20.5132 8.6598 20.6918 8.89381 20.8142 9.15772C20.9367 9.42162 21.0001 9.70907 21 10V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="navlabel">Home</span>
+      </a>
+      <a href="#/recommendation" data-route="recommendation" class="navlink">
+        <svg class="navicon" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M16 13H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M16 17H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M10 9H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="navlabel">Products</span>
+      </a>
+      <a href="#/comparison" data-route="comparison" class="navlink">
+        <svg class="navicon" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M8 3L4 7L8 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M4 7H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M16 21L20 17L16 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M20 17H4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="navlabel">Compare</span>
+      </a>
+      <a href="#/coming-soon" data-route="coming-soon" class="navlink">
+        <svg class="navicon" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 3V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M5.6 5.6L7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M17 17L18.4 18.4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3 12H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M19 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M5.6 18.4L7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M17 7L18.4 5.6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="navlabel">Coming Soon</span>
+      </a>
+      <a href="#/sample-form" data-route="sample-form" class="navlink">
+        <svg class="navicon" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M22 6L12 13L2 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="navlabel">Get Samples</span>
+      </a>
     </div>
   </nav>
 
   <!-- App scripts -->
   <!-- Bump v=… whenever you edit a JS file to bust the browser cache. -->
-  <script src="assets/js/quiz-data.js?v=16"></script>
-  <script src="assets/js/state.js?v=16"></script>
-  <script src="assets/js/submit.js?v=16"></script>
-  <script src="assets/js/views.js?v=16"></script>
-  <script src="assets/js/app.js?v=16"></script>
+  <script src="assets/js/quiz-data.js?v=17"></script>
+  <script src="assets/js/state.js?v=17"></script>
+  <script src="assets/js/submit.js?v=17"></script>
+  <script src="assets/js/views.js?v=17"></script>
+  <script src="assets/js/app.js?v=17"></script>
 </body>
 </html>

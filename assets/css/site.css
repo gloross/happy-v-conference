@@ -221,39 +221,16 @@ h2,
   letter-spacing: 0;
   color: var(--navy);
 }
+/* Inline-SVG nav icons inherit `color` via `stroke="currentColor"`. Setting
+   color: var(--navy) on the icon paints them in brand navy without the mask
+   gymnastics, which were dropping the icon entirely in some browsers when
+   stroke-only SVGs didn't register as opaque pixels. */
 .navicon {
   width: 24px;
   height: 24px;
-  background-color: var(--navy);
-  -webkit-mask-position: center;
-  mask-position: center;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: contain;
-  mask-size: contain;
   flex: 0 0 24px;
-  display: inline-block;
-}
-[data-route='home'] .navlink[data-route='home'] .navicon,
-.navlink[data-route='home'] .navicon {
-  -webkit-mask-image: url('../img/icons/nav-home.svg');
-  mask-image: url('../img/icons/nav-home.svg');
-}
-.navlink[data-route='recommendation'] .navicon {
-  -webkit-mask-image: url('../img/icons/nav-products.svg');
-  mask-image: url('../img/icons/nav-products.svg');
-}
-.navlink[data-route='comparison'] .navicon {
-  -webkit-mask-image: url('../img/icons/nav-compare.svg');
-  mask-image: url('../img/icons/nav-compare.svg');
-}
-.navlink[data-route='coming-soon'] .navicon {
-  -webkit-mask-image: url('../img/icons/nav-coming-soon.svg');
-  mask-image: url('../img/icons/nav-coming-soon.svg');
-}
-.navlink[data-route='sample-form'] .navicon {
-  -webkit-mask-image: url('../img/icons/nav-samples.svg');
-  mask-image: url('../img/icons/nav-samples.svg');
+  color: var(--navy);
+  display: block;
 }
 
 /* Topbar — hidden on home (home has its own hero header with brand) */
@@ -2049,8 +2026,27 @@ h2,
   /* Allow horizontal scroll on desktop too — when the user selects 5+ competitors
      the grid would otherwise squash columns to fit. Now they keep a readable
      min width and overflow gracefully. */
-  overflow-x: auto;
+  overflow-x: scroll;
   -webkit-overflow-scrolling: touch;
+  /* Force the scrollbar to always render so users see the swipe affordance
+     immediately (instead of only finding out the table scrolls after they
+     start scrolling). Mobile + macOS Safari hide auto scrollbars by default. */
+  scrollbar-color: var(--navy-200) transparent;
+  scrollbar-width: thin;
+}
+.cmp-host::-webkit-scrollbar {
+  height: 8px;
+  -webkit-appearance: none;
+}
+.cmp-host::-webkit-scrollbar-track {
+  background: transparent;
+}
+.cmp-host::-webkit-scrollbar-thumb {
+  background: var(--navy-200);
+  border-radius: 4px;
+}
+.cmp-host::-webkit-scrollbar-thumb:hover {
+  background: var(--navy-550);
 }
 /* Comparison table — uses CSS subgrid so every row auto-sizes to its tallest
    cell across all columns (row labels stay aligned with their data cells
@@ -2088,6 +2084,28 @@ h2,
   display: grid;
   grid-template-rows: subgrid;
   gap: 0;
+  /* Pin the row-labels column to the left edge so users always know which
+     row they're reading while they scroll horizontally through competitors.
+     Chrome 117+, Firefox 71+, Safari 16+ honor sticky on grid items. */
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  /* Establish a positioning context for the ::before veil */
+  isolation: isolate;
+}
+/* Chrome's paint region for a subgrid container can be narrower than the
+   layout box, leaking competitor cells through `background-color` on the
+   parent. A pseudo-element painted behind the content fills the FULL grid
+   area reliably regardless of subgrid quirks. */
+.cmp-table__rowlabels::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--white);
+  /* Subtle right edge so the sticky column visually separates from the
+     scrolling product columns. */
+  box-shadow: 1px 0 0 rgba(37, 66, 93, 0.08);
+  z-index: -1;
 }
 .cmp-table__corner {
   /* Spans the media + head rows; auto-sizes — no fixed height needed */
@@ -2629,7 +2647,12 @@ h2,
     min-width: 200px;
   }
   .cmp-table {
-    grid-template-columns: 100px repeat(var(--cmp-cols, 3), 1fr);
+    /* Same 4-cols-visible pattern as desktop, tuned to the narrower 100px
+       label column. Without a minmax floor here the columns squashed below
+       100px between the 990px and 1024px breakpoints. */
+    grid-template-columns:
+      100px
+      repeat(var(--cmp-cols, 3), minmax(calc((100% - 100px - (8px * 5)) / 4), 1fr));
   }
   .cmp-table__rowlabel {
     font-size: 13px;
@@ -2699,8 +2722,14 @@ h2,
   .cmp-host {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    /* Bleed the host edge-to-edge with the viewport, with NO internal padding.
+       The rowlabel cells already have their own padding so the visual gutter
+       still works — and dropping the host padding lets the sticky labels
+       column cover the viewport edge cleanly. Otherwise the 16px left padding
+       creates a strip where competitor cells scroll past the labels in plain
+       sight. */
     margin: 0 -16px;
-    padding: 0 16px;
+    padding: 0;
   }
   .cmp-table {
     /* width:max-content forces the grid to honor the fixed column widths
@@ -2745,20 +2774,30 @@ h2,
     height: 16px;
   }
 
-  /* Bottom nav: hide labels on very narrow widths to save space */
+  /* Bottom nav: stack icon over label on mobile so reps don't have to guess
+     what each icon means at a glance during the conference. */
   .navlink {
-    gap: 6px;
-    height: 52px;
+    flex-direction: column;
+    gap: 4px;
+    height: auto;
+    padding: 8px 2px;
   }
   .navlabel {
-    display: none;
+    display: block;
+    font-size: 11px;
+    line-height: 14px;
   }
+  /* The desktop .navicon rule sets `flex: 0 0 24px` — in a column-direction
+     flex container that flex-basis pins the height to 24px and ignores any
+     plain `height` override. Reset flex-basis so the icon stays square at
+     the intended size. */
   .navicon {
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
+    flex: 0 0 auto;
   }
   #bottomnav > div {
-    padding: 8px 4px;
+    padding: 6px 4px;
     gap: 0;
   }
 
@@ -3002,9 +3041,18 @@ h2,
   .rec-pill {
     width: 100%;
   }
+  /* Keep arrows visible on mobile multi-page recs but smaller and inset so the
+     swipe affordance is obvious without overlapping the card content. */
   .rec-arrow {
-    display: none;
-  } /* Mobile: dots are enough */
+    width: 36px;
+    height: 36px;
+  }
+  .rec-arrow--prev {
+    left: 4px;
+  }
+  .rec-arrow--next {
+    right: 4px;
+  }
 
   /* Comparison view: stack the controls; scroll the table horizontally with
      the row-label column sticky-left so context never disappears mid-scroll.
@@ -3045,7 +3093,8 @@ h2,
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     margin: 0 -16px; /* break out of view padding so scroll feels natural to the screen edge */
-    padding: 0 16px;
+    padding: 0; /* No internal padding so the sticky labels can cover the
+      viewport's left edge — the rowlabel cells supply their own gutter. */
   }
   .cmp-table {
     /* width:max-content forces the grid to honor the fixed 220px columns
@@ -3198,10 +3247,23 @@ h2,
   .cd-drawer {
     width: 100vw;
   }
+  /* Close button sits on top of the drawer itself (vs. on the dark overlay
+     to the left of the drawer like on desktop). White-on-white was invisible,
+     so swap to a visible navy fill with a white X icon. */
   .cd-close {
-    left: 16px;
-    right: auto;
+    left: auto;
+    right: 16px;
     top: 16px;
+    background: var(--navy);
+    width: 44px;
+    height: 44px;
+    z-index: 2;
+  }
+  .cd-close svg path {
+    stroke: white;
+  }
+  .cd-close:hover {
+    background: #1d3349;
   }
   .cd-content {
     padding: 64px 16px 40px;

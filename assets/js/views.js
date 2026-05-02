@@ -771,16 +771,37 @@
       </aside>`;
     document.body.appendChild(overlay);
     requestAnimationFrame(() => overlay.classList.add('cd-overlay--open'));
-    const close = () => {
+    /* Push a history entry so the device's back gesture / button closes the
+     drawer instead of navigating away from the recommendations page. We
+     consume the popstate ourselves and unhook the listener on close. */
+    const historyOpened = (() => {
+      try {
+        history.pushState({cdOpen: productId}, '');
+        return true;
+      } catch (e) {
+        return false;
+      }
+    })();
+    let closing = false;
+    const close = ({fromPopstate = false} = {}) => {
+      if (closing) return;
+      closing = true;
       overlay.classList.remove('cd-overlay--open');
       setTimeout(() => overlay.remove(), 200);
       document.removeEventListener('keydown', escClose);
+      window.removeEventListener('popstate', onPop);
+      /* If we still own the history entry we pushed (i.e. the user closed via
+         X / Esc / overlay click rather than a real back), pop it so the URL
+         doesn't keep an empty state behind. */
+      if (historyOpened && !fromPopstate) history.back();
     };
+    const onPop = () => close({fromPopstate: true});
+    window.addEventListener('popstate', onPop);
     const escClose = (e) => {
       if (e.key === 'Escape') close();
     };
     document.addEventListener('keydown', escClose);
-    overlay.querySelector('.cd-close').addEventListener('click', close);
+    overlay.querySelector('.cd-close').addEventListener('click', () => close());
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) close();
     });
